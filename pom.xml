@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>arora.moulik.springboot</groupId>
-	<artifactId>myfirstwebapp</artifactId>
+	<artifactId>carmabanking</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>myfirstwebapp</name>
+	<name>carma</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
