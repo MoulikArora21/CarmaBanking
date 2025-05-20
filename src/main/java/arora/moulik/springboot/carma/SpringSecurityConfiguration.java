@@ -19,21 +19,20 @@ public class SpringSecurityConfiguration {
         this.userDetailsService = userDetailsService;
     }
 
-    @Bean
+@Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-            .requestMatchers("/login", "/login.jsp", "/registration", "/otpverify", "/otpresend").permitAll()
-            .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-            .requestMatchers("/WEB-INF/**").permitAll() // Allow internal JSP access
+            .requestMatchers("/login", "/login.jsp", "/login-process", "/css/**", "/js/**", "/images/**").permitAll()
             .anyRequest().authenticated()
         )
         .formLogin()
             .loginPage("/login")
             .loginProcessingUrl("/login-process")
             .defaultSuccessUrl("/homepage", true)
-            .permitAll();
-        http.csrf().disable();
-        http.headers().frameOptions().disable();
+            .permitAll()
+        .and()
+        .csrf().disable() // Keep disabled for now
+        .headers().frameOptions().disable();
         return http.build();
     }
 
