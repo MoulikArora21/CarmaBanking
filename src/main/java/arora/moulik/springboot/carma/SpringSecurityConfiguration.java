@@ -22,31 +22,19 @@ public class SpringSecurityConfiguration {
 @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf().disable() // Consider enabling later with proper setup
+            .csrf().disable()
             .headers().frameOptions().disable()
             .and()
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/login", 
-                    "/login.jsp", 
-                    "/login-process", 
-                    "/css/**", 
-                    "/js/**", 
-                    "/images/**", 
-                    "/webjars/**", 
-                    "/error"
-                ).permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll() // Allow everything for now
             )
             .formLogin(form -> form
-                .loginPage("/login")
+                .loginPage("/login") // your custom login page
                 .loginProcessingUrl("/login-process")
                 .defaultSuccessUrl("/homepage", true)
-                .failureUrl("/login?error=true")
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout=true")
                 .permitAll()
             );
