@@ -90,7 +90,7 @@
 <body>
     <div class="container">
         <h1 class="maiden-orange-regular">CARMA</h1>
-        <form method = "post" action="login-process">
+        <form method = "post" action="login">
         	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
         
             <input type="text" name="username" placeholder="Username" required>
