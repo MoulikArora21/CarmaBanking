@@ -29,7 +29,7 @@ public class SpringSecurityConfiguration {
         )
         .formLogin()
             .loginPage("/login")
-            .loginProcessingUrl("/login")
+            .loginProcessingUrl("/login-process")
             .defaultSuccessUrl("/homepage", true)
             .permitAll();
         http.csrf().disable();
