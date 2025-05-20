@@ -19,25 +19,24 @@ public class SpringSecurityConfiguration {
         this.userDetailsService = userDetailsService;
     }
 
-@Bean
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf().disable()
             .headers().frameOptions().disable()
             .and()
             .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll() // Allow everything for now
+                .anyRequest().permitAll() // Allow everything
             )
             .formLogin(form -> form
-                .loginPage("/login") // your custom login page
-                .loginProcessingUrl("/login-process")
+                .loginPage("/login")
                 .defaultSuccessUrl("/homepage", true)
                 .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutSuccessUrl("/login?logout=true")
-                .permitAll()
             );
+    
+        return http.build();
+    }
+
 
         return http.build();
     }
