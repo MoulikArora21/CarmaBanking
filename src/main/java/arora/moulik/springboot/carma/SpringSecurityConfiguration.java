@@ -21,18 +21,36 @@ public class SpringSecurityConfiguration {
 
 @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> auth
-            .requestMatchers("/login", "/login.jsp", "/login-process", "/css/**", "/js/**", "/images/**").permitAll()
-            .anyRequest().authenticated()
-        )
-        .formLogin()
-            .loginPage("/login")
-            .loginProcessingUrl("/login-process")
-            .defaultSuccessUrl("/homepage", true)
-            .permitAll()
-        .and()
-        .csrf().disable() // Keep disabled for now
-        .headers().frameOptions().disable();
+        http
+            .csrf().disable() // Consider enabling later with proper setup
+            .headers().frameOptions().disable()
+            .and()
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    "/login", 
+                    "/login.jsp", 
+                    "/login-process", 
+                    "/css/**", 
+                    "/js/**", 
+                    "/images/**", 
+                    "/webjars/**", 
+                    "/error"
+                ).permitAll()
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/login-process")
+                .defaultSuccessUrl("/homepage", true)
+                .failureUrl("/login?error=true")
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout=true")
+                .permitAll()
+            );
+
         return http.build();
     }
 
