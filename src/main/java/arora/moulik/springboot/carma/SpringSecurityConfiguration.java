@@ -22,16 +22,12 @@ public class SpringSecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()
-            .headers().frameOptions().disable()
-            .and()
             .authorizeHttpRequests(auth -> auth
                 .anyRequest().permitAll() // Allow everything
             )
             .formLogin(form -> form
                 .loginPage("/login")
                 .defaultSuccessUrl("/homepage", true)
-                .permitAll()
             );
     
         return http.build();
