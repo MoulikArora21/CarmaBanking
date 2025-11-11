@@ -6,3 +6,9 @@ target/
    .mvn/
    mvnw
    mvnw.cmd
+
+# Environment variables
+.env
+
+# Docker volumes
+postgres_data/
