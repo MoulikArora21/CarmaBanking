@@ -28,36 +28,48 @@ public class HomepageController {
     @RequestMapping("homepage")
     public String showhome(ModelMap model) {
         String username = getLoggedinUsername();
+
+        // Check if user is authenticated (not anonymous)
+        if (username == null || "anonymousUser".equals(username)) {
+            return "redirect:/login";
+        }
+
         model.put("username", username);
-        
+
+        // Find user in database
+        var user = userRepo.findByUsername(username);
+        if (user == null) {
+            return "redirect:/login";
+        }
+
         // Format account number
-        String account = userRepo.findByUsername(username).getaccount();
+        String account = user.getaccount();
         String account1 = account.substring(0, 4);
         String account2 = account.substring(4, 8);
         String account3 = account.substring(8, 12);
-        
+
         model.put("account", account);
         model.put("account1", account1);
         model.put("account2", account2);
         model.put("account3", account3);
-        
+
         System.out.println("Before: " + account);
         System.out.println("After: " + account);
         System.out.println(account1);
         System.out.println(account2);
         System.out.println(account3);
-        
-        model.put("balance", userRepo.findByUsername(username).getbalance());
-        
+
+        model.put("balance", user.getbalance());
+
         // Fetch the latest two transactions
         List<Transaction> transactions = trxRepo.findTop2ByUsernameOrderByDateDesc(username);
         System.out.println("Fetched transactions for " + username + ": " + transactions);
         model.put("transactions", transactions);
-        
+
         // Add today and yesterday for date comparison
         model.put("today", LocalDate.now());
         model.put("yesterday", LocalDate.now().minusDays(1));
-        
+
         return "welcome";
     }
     
