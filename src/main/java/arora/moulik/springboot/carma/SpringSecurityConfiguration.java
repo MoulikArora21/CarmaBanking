@@ -5,12 +5,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 public class SpringSecurityConfiguration {
@@ -22,39 +20,12 @@ public class SpringSecurityConfiguration {
     }
 
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring()
-            .requestMatchers(
-                new AntPathRequestMatcher("/"),
-                new AntPathRequestMatcher("/registration"),
-                new AntPathRequestMatcher("/otpverify"),
-                new AntPathRequestMatcher("/otpresend"),
-                new AntPathRequestMatcher("/css/**"),
-                new AntPathRequestMatcher("/js/**"),
-                new AntPathRequestMatcher("/images/**"),
-                new AntPathRequestMatcher("/webjars/**")
-            );
-    }
-
-    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/error").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()  // Allow ALL requests without authentication
             )
-            .formLogin(form -> form
-                .loginPage("/login")
-                .defaultSuccessUrl("/homepage", true)
-                .failureUrl("/login?error=true")
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout=true")
-                .permitAll()
-            )
-            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf.disable())   // Disable CSRF
             .headers(headers -> headers
                 .frameOptions(frameOptions -> frameOptions.disable())
             );

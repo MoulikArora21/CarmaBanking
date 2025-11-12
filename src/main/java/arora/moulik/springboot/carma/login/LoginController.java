@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 @SessionAttributes("username")
 public class LoginController {	
 	
-	@RequestMapping(value="/login", method = RequestMethod.GET)
+	@RequestMapping(value="/login")
 	public String loginpage(ModelMap model) {
-//		model.put("username", getLoggedinUsername());
 		return "login";
 	}
 	
