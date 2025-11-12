@@ -139,8 +139,8 @@
                 </div>
 
                 <div class="user-info">
-                    <div class="user-avatar">\${username.substring(0,1).toUpperCase()}</div>
-                    <span>\${username}</span>
+                    <div class="user-avatar">${username.substring(0,1).toUpperCase()}</div>
+                    <span>${username}</span>
                 </div>
                 <a href="/logout" class="btn-logout">Logout</a>
             </div>
@@ -161,18 +161,18 @@
         <% } %>
 
         <div class="recipients-list">
-            <c:forEach var="recipient" items="\${recipients}">
+            <c:forEach var="recipient" items="${recipients}">
                 <div class="recipient-card">
                     <div class="recipient-header" onclick="toggleTransferForm(this)">
-                        <div class="recipient-avatar">\${recipient.username.charAt(0).toUpperCase()}</div>
+                        <div class="recipient-avatar">${recipient.username.charAt(0).toUpperCase()}</div>
                         <div class="recipient-info">
-                            <div class="recipient-name">\${recipient.username.toUpperCase()}</div>
-                            <div class="recipient-username">@\${recipient.username}</div>
+                            <div class="recipient-name">${recipient.username.toUpperCase()}</div>
+                            <div class="recipient-username">@${recipient.username}</div>
                         </div>
                     </div>
                     <div class="transfer-form">
                         <form action="/sendMoney" method="post">
-                            <input type="hidden" name="recipientUsername" value="\${recipient.username}">
+                            <input type="hidden" name="recipientUsername" value="${recipient.username}">
                             <input type="number" name="amount" placeholder="0.00" min="0.01" step="0.01" required>
                             <span class="currency-label">EUR</span>
                             <button type="submit" class="btn-send">Send Money</button>

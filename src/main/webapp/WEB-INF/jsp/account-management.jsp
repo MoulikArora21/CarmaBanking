@@ -108,8 +108,8 @@
             </a>
             <div class="header-actions">
                 <div class="user-info">
-                    <div class="user-avatar">\${username.substring(0,1).toUpperCase()}</div>
-                    <span>\${username}</span>
+                    <div class="user-avatar">${username.substring(0,1).toUpperCase()}</div>
+                    <span>${username}</span>
                 </div>
                 <a href="/logout" class="btn-logout">Logout</a>
             </div>
@@ -133,27 +133,27 @@
                     <div class="details-grid">
                         <div class="detail-item">
                             <span class="detail-label">Full Name</span>
-                            <span class="detail-value">\${user.name} \${user.surname}</span>
+                            <span class="detail-value">${user.name} ${user.surname}</span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">Email Address</span>
-                            <span class="detail-value">\${user.email}</span>
+                            <span class="detail-value">${user.email}</span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">Phone Number</span>
-                            <span class="detail-value">\${user.phone_number}</span>
+                            <span class="detail-value">${user.phone_number}</span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">Country</span>
-                            <span class="detail-value">\${user.country}</span>
+                            <span class="detail-value">${user.country}</span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">Address</span>
-                            <span class="detail-value">\${user.address}</span>
+                            <span class="detail-value">${user.address}</span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">Personal ID</span>
-                            <span class="detail-value">\${user.personalid}</span>
+                            <span class="detail-value">${user.personalid}</span>
                         </div>
                     </div>
                     <div class="action-buttons">

@@ -107,8 +107,8 @@
             </a>
             <div class="header-actions">
                 <div class="user-info">
-                    <div class="user-avatar">\${username.substring(0,1).toUpperCase()}</div>
-                    <span>\${username}</span>
+                    <div class="user-avatar">${username.substring(0,1).toUpperCase()}</div>
+                    <span>${username}</span>
                 </div>
                 <a href="/logout" class="btn-logout">Logout</a>
             </div>
@@ -132,14 +132,13 @@
                     <div class="card-info">
                         <div class="card-holder">
                             <span class="card-label">Card Holder</span>
-                            <span class="card-value">\${name}</span>
+                            <span class="card-value">${name}</span>
                         </div>
                         <div class="card-expiry">
                             <span class="card-label">Expires</span>
                             <span class="card-value">12/28</span>
                         </div>
                     </div>
-                    <div class="card-logo">CARMA</div>
                 </div>
             </div>
 
