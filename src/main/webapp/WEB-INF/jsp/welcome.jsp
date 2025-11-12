@@ -562,7 +562,7 @@
                                             EUR ${transaction.amount}
                                         </div>
                                         <div class="transaction-date">
-                                            <fmt:formatDate value="${transaction.date}" pattern="MMM dd, yyyy"/>
+                                            ${transaction.date.toLocalDate()}
                                         </div>
                                     </div>
                                 </div>

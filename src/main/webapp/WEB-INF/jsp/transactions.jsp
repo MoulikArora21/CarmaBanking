@@ -101,7 +101,7 @@
                                         </c:choose>
                                         EUR ${transaction.amount}
                                     </div>
-                                    <div class="transaction-date"><fmt:formatDate value="${transaction.date}" pattern="MMM dd, yyyy"/></div>
+                                    <div class="transaction-date">${transaction.date.toLocalDate()}</div>
                                 </div>
                             </div>
                         </c:forEach>
