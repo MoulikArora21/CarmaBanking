@@ -14,6 +14,17 @@
         .logo-link { display: flex; align-items: center; text-decoration: none; transition: opacity 0.2s; }
         .logo-link:hover { opacity: 0.8; }
         .header-actions { display: flex; align-items: center; gap: 16px; }
+        .notification-container { position: relative; }
+        .notification-bell { width: 40px; height: 40px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; position: relative; }
+        .notification-bell:hover { background: #edf2f7; border-color: #667eea; }
+        .notification-dropdown { position: absolute; top: 50px; right: 0; width: 320px; background: white; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); border: 1px solid #e2e8f0; display: none; z-index: 1000; }
+        .notification-dropdown.open { display: block; }
+        .notification-header { padding: 16px 20px; border-bottom: 1px solid #e2e8f0; font-weight: 600; font-size: 15px; color: #2d3748; }
+        .notification-list { max-height: 400px; overflow-y: auto; }
+        .notification-item { padding: 16px 20px; border-bottom: 1px solid #f7fafc; transition: background 0.2s; }
+        .notification-item:hover { background: #f7fafc; }
+        .notification-item:last-child { border-bottom: none; }
+        .notification-text { font-size: 14px; color: #4a5568; line-height: 1.5; text-align: center; padding: 24px 0; }
         .user-info { display: flex; align-items: center; gap: 12px; padding: 8px 16px; background: #f7fafc; border-radius: 12px; }
         .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 16px; }
         .btn-logout { padding: 10px 20px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; color: #4a5568; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; text-decoration: none; }
@@ -59,6 +70,21 @@
                 </svg>
             </a>
             <div class="header-actions">
+                <div class="notification-container">
+                    <div class="notification-bell" onclick="toggleNotifications()">
+                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M6.31317 12.463C6.20006 9.29213 8.60976 6.6252 11.701 6.5C14.7923 6.6252 17.202 9.29213 17.0889 12.463C17.0889 13.78 18.4841 15.063 18.525 16.383C18.525 16.4017 18.525 16.4203 18.525 16.439C18.5552 17.2847 17.9124 17.9959 17.0879 18.029H13.9757C13.9786 18.677 13.7404 19.3018 13.3098 19.776C12.8957 20.2372 12.3123 20.4996 11.701 20.4996C11.0897 20.4996 10.5064 20.2372 10.0923 19.776C9.66161 19.3018 9.42346 18.677 9.42635 18.029H6.31317C5.48869 17.9959 4.84583 17.2847 4.87602 16.439C4.87602 16.4203 4.87602 16.4017 4.87602 16.383C4.91795 15.067 6.31317 13.781 6.31317 12.463Z" stroke="#4a5568" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="notification-dropdown" id="notificationDropdown">
+                        <div class="notification-header">Notifications</div>
+                        <div class="notification-list">
+                            <div class="notification-item">
+                                <div class="notification-text">No new notifications</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="user-info">
                     <div class="user-avatar">${username.substring(0,1).toUpperCase()}</div>
                     <span>${username}</span>
@@ -88,5 +114,19 @@
             </div>
         </div>
     </div>
+    <script>
+        function toggleNotifications() {
+            const dropdown = document.getElementById('notificationDropdown');
+            dropdown.classList.toggle('open');
+        }
+
+        // Close notification dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const container = document.querySelector('.notification-container');
+            if (!container.contains(event.target)) {
+                document.getElementById('notificationDropdown').classList.remove('open');
+            }
+        });
+    </script>
 </body>
 </html>
