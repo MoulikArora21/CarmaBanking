@@ -23,22 +23,7 @@ public class SpringSecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                // Public pages - accessible without authentication
-                .requestMatchers("/", "/login", "/registration", "/otpverify", "/otpresend").permitAll()
-                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/error").permitAll()
-                // All other pages require authentication
-                .anyRequest().authenticated()
-            )
-            .formLogin(form -> form
-                .loginPage("/login")
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .defaultSuccessUrl("/homepage", true)
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutSuccessUrl("/login")
-                .permitAll()
+                .anyRequest().permitAll()  // Temporarily allow all - authentication to be added later
             )
             .csrf(csrf -> csrf.disable())
             .headers(headers -> headers
