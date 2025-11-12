@@ -72,31 +72,31 @@
                 <button class="filter-btn">Sent</button>
             </div>
             <c:choose>
-                <c:when test="${not empty alltransactions}">
+                <c:when test="${not empty transactionsinjsp}">
                     <div class="transaction-list">
-                        <c:forEach var="transaction" items="${alltransactions}">
+                        <c:forEach var="transaction" items="${transactionsinjsp}">
                             <div class="transaction-item">
                                 <div class="transaction-info">
-                                    <div class="transaction-icon ${transaction.type == 'Received' ? 'icon-received' : 'icon-sent'}">
+                                    <div class="transaction-icon ${transaction.type == 'Credit' ? 'icon-received' : 'icon-sent'}">
                                         <c:choose>
-                                            <c:when test="${transaction.type == 'Received'}">+</c:when>
+                                            <c:when test="${transaction.type == 'Credit'}">+</c:when>
                                             <c:otherwise>-</c:otherwise>
                                         </c:choose>
                                     </div>
                                     <div class="transaction-details">
-                                        <h4>${transaction.type}</h4>
+                                        <h4>${transaction.type == 'Credit' ? 'Received' : 'Sent'}</h4>
                                         <p>
                                             <c:choose>
-                                                <c:when test="${transaction.type == 'Received'}">From ${transaction.sender}</c:when>
-                                                <c:otherwise>To ${transaction.recipient}</c:otherwise>
+                                                <c:when test="${transaction.type == 'Credit'}">From ${transaction.senderUsername}</c:when>
+                                                <c:otherwise>To ${transaction.recipientUsername}</c:otherwise>
                                             </c:choose>
                                         </p>
                                     </div>
                                 </div>
                                 <div class="transaction-amount">
-                                    <div class="amount ${transaction.type == 'Received' ? 'positive' : 'negative'}">
+                                    <div class="amount ${transaction.type == 'Credit' ? 'positive' : 'negative'}">
                                         <c:choose>
-                                            <c:when test="${transaction.type == 'Received'}">+</c:when>
+                                            <c:when test="${transaction.type == 'Credit'}">+</c:when>
                                             <c:otherwise>-</c:otherwise>
                                         </c:choose>
                                         EUR ${transaction.amount}

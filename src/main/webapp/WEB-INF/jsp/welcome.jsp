@@ -533,17 +533,17 @@
                             <c:forEach var="transaction" items="${transactions}">
                                 <div class="transaction-item">
                                     <div class="transaction-info">
-                                        <div class="transaction-icon ${transaction.type == 'Received' ? 'icon-received' : 'icon-sent'}">
+                                        <div class="transaction-icon ${transaction.type == 'Credit' ? 'icon-received' : 'icon-sent'}">
                                             <c:choose>
-                                                <c:when test="${transaction.type == 'Received'}">+</c:when>
+                                                <c:when test="${transaction.type == 'Credit'}">+</c:when>
                                                 <c:otherwise>-</c:otherwise>
                                             </c:choose>
                                         </div>
                                         <div class="transaction-details">
-                                            <h4>${transaction.type}</h4>
+                                            <h4>${transaction.type == 'Credit' ? 'Received' : 'Sent'}</h4>
                                             <p>
                                                 <c:choose>
-                                                    <c:when test="${transaction.type == 'Received'}">
+                                                    <c:when test="${transaction.type == 'Credit'}">
                                                         From ${transaction.senderUsername}
                                                     </c:when>
                                                     <c:otherwise>
@@ -554,9 +554,9 @@
                                         </div>
                                     </div>
                                     <div class="transaction-amount">
-                                        <div class="amount ${transaction.type == 'Received' ? 'positive' : 'negative'}">
+                                        <div class="amount ${transaction.type == 'Credit' ? 'positive' : 'negative'}">
                                             <c:choose>
-                                                <c:when test="${transaction.type == 'Received'}">+</c:when>
+                                                <c:when test="${transaction.type == 'Credit'}">+</c:when>
                                                 <c:otherwise>-</c:otherwise>
                                             </c:choose>
                                             EUR ${transaction.amount}
