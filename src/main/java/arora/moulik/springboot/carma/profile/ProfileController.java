@@ -20,7 +20,14 @@ public class ProfileController {
 	
     @RequestMapping("account-management")
     public String showaccmanagement(ModelMap model) {
-    	
+    	String username = (String) model.get("username");
+    	var user = userRepo.findByUsername(username);
+
+    	if (user == null) {
+    		return "redirect:/login";
+    	}
+
+    	model.put("user", user);
     	return "account-management";
     }
 
