@@ -385,7 +385,6 @@
                 </div>
                 <div class="money-transfer">
                     <form action="/sendMoney" method="post">
-                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         <input type="hidden" name="recipientUsername" value="${recipient.username}">
                         <div class="amount-section">
                             <input type="number" name="amount" value="0" min="0.01" step="0.01" required>
@@ -401,7 +400,6 @@
             <div class="add-recipient-form">
                 <div class="col-2">
                     <form action="/addRecipient" method="post">
-                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         <div class="input-container">
                             <input type="text" name="recipientUsername" placeholder="Username" required>
                             <span class="mandatory-mark">*</span>
