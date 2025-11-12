@@ -5,8 +5,8 @@ COPY pom.xml .
 COPY src ./src
 RUN mvn clean install -DskipTests
 
-# Run stage - using official OpenJDK 17 JRE (Alpine = small & secure)
-FROM eclipse-temurin:17-jre-alpine
+# Run stage - using JDK (not JRE) for JSP support
+FROM eclipse-temurin:17-jdk
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
