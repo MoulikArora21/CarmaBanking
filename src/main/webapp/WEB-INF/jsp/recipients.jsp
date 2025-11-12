@@ -160,7 +160,7 @@
             <c:forEach var="recipient" items="${recipients}">
                 <div class="recipient-card">
                     <div class="recipient-header" onclick="toggleTransferForm(this)">
-                        <div class="recipient-avatar">${recipient.username.charAt(0).toUpperCase()}</div>
+                        <div class="recipient-avatar">${recipient.username.substring(0,1).toUpperCase()}</div>
                         <div class="recipient-info">
                             <div class="recipient-name">${recipient.username.toUpperCase()}</div>
                             <div class="recipient-username">@${recipient.username}</div>
