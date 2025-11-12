@@ -23,13 +23,32 @@ public class SpringSecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll() // Allow everything
+                // Public pages - no authentication required
+                .requestMatchers("/", "/login", "/registration", "/otpverify", "/otpresend").permitAll()
+                // Static resources
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
+                // Error pages
+                .requestMatchers("/error").permitAll()
+                // All other requests require authentication
+                .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/login")
+                .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/homepage", true)
+                .failureUrl("/login?error=true")
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout=true")
+                .permitAll()
+            )
+            .csrf(csrf -> csrf.disable())
+            .headers(headers -> headers
+                .frameOptions(frameOptions -> frameOptions.disable())
             );
-    
+
         return http.build();
     }
 
