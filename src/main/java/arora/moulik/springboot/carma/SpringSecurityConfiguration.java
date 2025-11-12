@@ -26,15 +26,13 @@ public class SpringSecurityConfiguration {
         return (web) -> web.ignoring()
             .requestMatchers(
                 new AntPathRequestMatcher("/"),
-                new AntPathRequestMatcher("/login"),
                 new AntPathRequestMatcher("/registration"),
                 new AntPathRequestMatcher("/otpverify"),
                 new AntPathRequestMatcher("/otpresend"),
                 new AntPathRequestMatcher("/css/**"),
                 new AntPathRequestMatcher("/js/**"),
                 new AntPathRequestMatcher("/images/**"),
-                new AntPathRequestMatcher("/webjars/**"),
-                new AntPathRequestMatcher("/error")
+                new AntPathRequestMatcher("/webjars/**")
             );
     }
 
@@ -42,6 +40,7 @@ public class SpringSecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/login", "/error").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
