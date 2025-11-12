@@ -42,9 +42,7 @@ public class SpringSecurityConfiguration {
                 .permitAll()
             )
             .csrf(csrf -> csrf.disable())
-            .headers(headers -> headers
-                .frameOptions(frameOptions -> frameOptions.disable())
-            );
+            .headers(headers -> headers.disable());
 
         return http.build();
     }
