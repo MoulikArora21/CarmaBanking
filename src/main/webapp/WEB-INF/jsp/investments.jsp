@@ -1,462 +1,205 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Investments - CARMA Banking</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Maiden+Orange&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-        }
-
-        /* Header */
-        header {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        header > div {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 30px 10%;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .logo-btn {
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .logo-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .log-out-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .log-out-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-        }
-
-        /* Main Container */
-        .container {
-            max-width: 1400px;
-            margin: 40px auto;
-            padding: 0 5%;
-        }
-
-        .page-header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .page-header h1 {
-            font-size: 48px;
-            color: #2d3748;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .page-header p {
-            font-size: 18px;
-            color: #718096;
-        }
-
-        /* Portfolio Summary */
-        .portfolio-summary {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        .portfolio-summary h2 {
-            font-size: 24px;
-            color: #2d3748;
-            margin-bottom: 30px;
-        }
-
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .summary-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 15px;
-            transition: transform 0.3s ease;
-        }
-
-        .summary-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .summary-card h3 {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-bottom: 10px;
-        }
-
-        .summary-card .value {
-            font-size: 32px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .summary-card .change {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        .change.positive {
-            color: #48bb78;
-        }
-
-        .change.negative {
-            color: #f56565;
-        }
-
-        /* Investment Categories */
-        .investments-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        .investment-card {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .investment-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-        }
-
-        .investment-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .investment-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            margin-right: 20px;
-        }
-
-        .icon-stocks {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .icon-crypto {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        .icon-bonds {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-
-        .icon-funds {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-        }
-
-        .investment-info h3 {
-            font-size: 22px;
-            color: #2d3748;
-            margin-bottom: 5px;
-        }
-
-        .investment-info p {
-            color: #718096;
-            font-size: 14px;
-        }
-
-        .investment-stats {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: #718096;
-            margin-bottom: 5px;
-        }
-
-        .stat-value {
-            font-size: 20px;
-            font-weight: bold;
-            color: #2d3748;
-        }
-
-        /* Action Buttons */
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 40px;
-        }
-
-        .action-btn {
-            padding: 15px 40px;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-        }
-
-        .btn-secondary {
-            background: white;
-            color: #667eea;
-            border: 2px solid #667eea;
-        }
-
-        .btn-secondary:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            header > div {
-                padding: 20px 5%;
-            }
-
-            .page-header h1 {
-                font-size: 32px;
-            }
-
-            .investments-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-            }
-
-            .action-btn {
-                width: 100%;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f8f9fa; color: #1a202c; }
+        .header { background: white; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .header-content { max-width: 1400px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 72px; }
+        .logo { font-size: 24px; font-weight: 700; color: #2d3748; text-decoration: none; letter-spacing: -0.5px; }
+        .logo span { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-actions { display: flex; align-items: center; gap: 16px; }
+        .user-info { display: flex; align-items: center; gap: 12px; padding: 8px 16px; background: #f7fafc; border-radius: 12px; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 16px; }
+        .btn-logout { padding: 10px 20px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; color: #4a5568; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+        .btn-logout:hover { background: #f7fafc; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
+        .page-header { margin-bottom: 32px; }
+        .page-title { font-size: 32px; font-weight: 700; color: #2d3748; margin-bottom: 8px; }
+        .page-subtitle { color: #718096; font-size: 16px; }
+        .portfolio-summary { background: white; border-radius: 16px; padding: 32px; margin-bottom: 32px; border: 1px solid #e2e8f0; }
+        .portfolio-summary h2 { font-size: 20px; font-weight: 600; color: #2d3748; margin-bottom: 24px; }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .summary-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 24px; border-radius: 12px; transition: transform 0.2s; }
+        .summary-card:hover { transform: translateY(-4px); }
+        .summary-card h3 { font-size: 14px; opacity: 0.95; margin-bottom: 12px; font-weight: 500; }
+        .summary-card .value { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+        .summary-card .change { font-size: 14px; opacity: 0.9; }
+        .investments-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 32px; }
+        .investment-card { background: white; border-radius: 16px; padding: 28px; border: 1px solid #e2e8f0; transition: all 0.2s; cursor: pointer; }
+        .investment-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        .investment-header { display: flex; align-items: center; margin-bottom: 24px; }
+        .investment-icon { width: 56px; height: 56px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; margin-right: 16px; color: white; }
+        .icon-stocks { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .icon-crypto { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .icon-bonds { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .icon-funds { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .investment-info h3 { font-size: 18px; color: #2d3748; margin-bottom: 4px; font-weight: 600; }
+        .investment-info p { color: #718096; font-size: 14px; }
+        .investment-stats { display: flex; justify-content: space-between; margin-top: 20px; }
+        .stat { text-align: center; }
+        .stat-label { font-size: 12px; color: #a0aec0; margin-bottom: 6px; }
+        .stat-value { font-size: 18px; font-weight: 700; color: #2d3748; }
+        .positive { color: #38a169; }
+        .negative { color: #e53e3e; }
+        .action-buttons { display: flex; gap: 16px; justify-content: center; }
+        .action-btn { padding: 12px 32px; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
+        .btn-secondary { background: white; color: #667eea; border: 1px solid #e2e8f0; }
+        .btn-secondary:hover { background: #f7fafc; }
+        @media (max-width: 768px) { .header-content { padding: 0 16px; } .user-info { display: none; } .container { padding: 24px 16px; } .page-title { font-size: 24px; } .investments-grid { grid-template-columns: 1fr; } .action-buttons { flex-direction: column; } .action-btn { width: 100%; } }
     </style>
 </head>
 <body>
-<header>
-    <div>
-        <div class="logo-btn">
-            <a href="/homepage"><svg width="auto" height="50px" viewBox="0 0 250 170" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M8.17307 164.205H125H241.827M36 151.437H54H228.846M125 6.27841V62.8826M125 6.27841L92.5481 22.0018M125 6.27841L157.452 22.0018M125 62.8826H92.5481M125 62.8826H157.452M60.0961 37.7252L66.5865 34.5805L92.5481 22.0018M60.0961 37.7252L8.17307 62.8826H60.0961M60.0961 37.7252V62.8826M60.0961 62.8826H92.5481M92.5481 22.0018V62.8826M157.452 22.0018L176.923 31.4358L189.904 37.7252M157.452 22.0018V62.8826M157.452 62.8826H176.923H189.904M189.904 37.7252L241.827 62.8826H189.904M189.904 37.7252V62.8826" stroke="url(#paint0_linear_5_6)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M95.3769 136.4L94.982 145.14H77.4871V135.654L82.6461 135.867L80.4826 120.304L69.499 120.944L67.7515 134.801L72.5777 135.334L72.0122 145.14H55.3805L54.6043 134.588L59.7633 134.801L68.8333 77.8807L64.5895 78.0939V69.3889H86.0577L84.976 77.028L80.8155 77.2412L90.2183 135.867L95.3769 136.4ZM79.3177 111.99L74.8244 79.2664L70.6639 111.99H79.3177ZM134.61 133.948L134.279 145.14H118.814L118.135 135.867H121.297L115.639 110.924H109.981L109.814 135.867L114.807 135.547V145.14H98.5822L97.8323 135.867H102.742L102.7 107.353L102.658 78.8401L97.9154 79.0532L99.0385 69.3889C102.145 69.2113 102.45 69.4245 105.529 69.3889C108.635 69.3179 115.375 69.3889 118.51 69.3889C120.978 69.3889 122.81 69.7442 125 70.6324C127.191 71.4852 128.828 73.5105 128.828 73.5105C128.828 73.5105 131.754 77.4189 132.697 80.0125C133.64 82.6063 134.111 85.6264 134.111 89.0729C134.111 91.3469 133.862 93.603 133.363 95.8415C132.863 98.0799 132.128 100.159 131.157 102.077C130.187 103.96 128.994 105.595 127.579 106.98C126.165 108.366 124.543 109.325 122.712 109.858L128.786 134.161L134.61 133.948ZM126.456 89.4993C126.456 87.6872 126.206 86.0883 125.707 84.7026C125.236 83.3169 124.57 82.1444 123.71 81.1851C122.85 80.2258 121.838 79.5152 120.673 79.0532C119.508 78.5558 118.246 78.3071 116.887 78.3071H113.809H110.23L110.064 101.864H112.061C113.892 101.864 115.667 101.775 117.387 101.597C119.134 101.384 120.673 100.869 122.004 100.052C123.335 99.2347 124.403 98.0089 125.208 96.3745C126.04 94.7046 126.456 92.4128 126.456 89.4993ZM193.066 69.3889V79.4796L187.657 79.1598L186.825 135.547H191.069V145.234H173.424L174.427 135.547H179.503L179.669 84.9158L169.185 139.917L161.03 140.237L152.875 85.0224L152.293 134.694H157.202L157.604 145.14H138.064V134.481L144.804 134.694L145.220 80.7587L137.897 80.2257L137.981 69.3889H157.452L165.274 123.609L176.923 69.3889H193.066ZM235.337 136.4L235.5 151C235.5 151 234.424 145.234 228.846 145.234C223.268 145.234 217.447 145.234 217.447 145.234V135.654L222.605 135.867L220.442 120.304L209.458 120.944L207.711 134.801L212.537 135.334L211.961 145.234H194.873L194.564 134.588L199.723 134.801L208.792 77.8807L204.548 78.0939L202.885 69.3889H226.5L224.935 77.028L220.775 77.2412L230.177 135.867L235.337 136.4ZM219.277 111.99L214.784 79.2664L210.623 111.99H219.277Z" fill="url(#paint1_linear_5_6)"/>
-        <path d="M54.5 69.5L55.0238 95.8236L48.013 95.5116C47.8354 94.2987 47.5988 93.0338 47.303 91.7168C47.0367 90.3999 46.6818 89.1177 46.238 87.87C45.8239 86.6224 45.321 85.4441 44.7294 84.3352C44.1378 83.1915 43.4427 82.2038 42.6439 81.3721C41.8452 80.5057 40.9429 79.8299 39.9372 79.3447C38.9314 78.8249 37.8074 78.565 36.5649 78.565C34.7013 78.565 33.0743 79.0329 31.684 79.9685C30.3232 80.9042 29.1547 82.1518 28.1786 83.7113C27.2024 85.2709 26.3889 87.0556 25.7381 89.0657C25.1168 91.0411 24.6288 93.0684 24.2738 95.1477C23.9188 97.2271 23.6674 99.2891 23.5194 101.334C23.4011 103.344 23.342 105.146 23.342 106.74C23.342 108.23 23.4011 109.98 23.5194 111.99C23.6378 113.966 23.8596 116.01 24.185 118.125C24.54 120.238 25.0133 122.335 25.605 124.415C26.1966 126.459 26.9509 128.296 27.8679 129.925C28.8146 131.519 29.9386 132.819 31.2402 133.824C32.5419 134.829 34.08 135.331 35.855 135.331C38.0144 135.331 39.8189 134.777 41.2684 133.668C42.7475 132.559 43.9455 131.138 44.8625 129.405C45.7795 127.638 46.4451 125.679 46.8593 123.531C47.303 121.348 47.5988 119.182 47.7467 117.033H54.7575C54.7575 120.602 54.373 124.068 53.6039 127.43C52.8643 130.791 51.7106 133.772 50.1428 136.371C48.575 138.97 46.5782 141.067 44.1525 142.661C41.7564 144.22 38.9018 145 35.5887 145C33.0447 145 30.7669 144.394 28.7554 143.181C26.7438 141.968 24.969 140.356 23.4307 138.346C21.9221 136.301 20.6353 133.979 19.5703 131.38C18.5054 128.746 17.6328 126.026 16.9524 123.219C16.272 120.412 15.7691 117.622 15.4437 114.85C15.1479 112.042 15 109.478 15 107.156C15 104.522 15.1331 101.75 15.3994 98.8386C15.6952 95.9275 16.1537 93.0684 16.7749 90.2613C17.4257 87.4195 18.2688 84.7163 19.3041 82.1518C20.369 79.5874 21.6854 77.3347 23.2533 75.394C24.8211 73.4533 26.6699 71.9111 28.7997 70.7674C30.9297 69.5891 33.3701 69 36.1212 69C38.9018 69 41.2388 69.7624 43.132 71.2873C45.0252 72.8121 46.6818 74.9261 48.1017 77.6293L48 69.5H54.5Z" fill="url(#paint2_linear_5_6)"/>
-        <path d="M18.9999 135.5C24.9999 148 32.7104 146.922 36.4999 147V156H14.4999C5.99976 156 3.49988 159 3.49988 159C3.49988 159 12.0611 148.584 21.4999 149C21.0447 146.401 19.859 146.84 18.9999 135.5Z" fill="#1C6318"/>
-        <defs>
-        <linearGradient id="paint0_linear_5_6" x1="125" y1="6.27841" x2="125" y2="172.693" gradientUnits="userSpaceOnUse">
-        <stop/>
-        <stop offset="1" stop-color="#20721C"/>
-        </linearGradient>
-        <linearGradient id="paint1_linear_5_6" x1="125" y1="71.4057" x2="125" y2="151.804" gradientUnits="userSpaceOnUse">
-        <stop/>
-        <stop offset="1" stop-color="#20721C"/>
-        </linearGradient>
-        <linearGradient id="paint2_linear_5_6" x1="37.8961" y1="68.7519" x2="37.8961" y2="144.752" gradientUnits="userSpaceOnUse">
-        <stop/>
-        <stop offset="1" stop-color="#20721C"/>
-        </linearGradient>
-        </defs>
-                </svg></a>
-        </div>
-        <a href="/logout"><button class="log-out-btn">Logout</button></a>
-    </div>
-</header>
-
-<div class="container">
-    <div class="page-header">
-        <h1>Investment Portfolio</h1>
-        <p>Manage and track your investments</p>
-    </div>
-
-    <!-- Portfolio Summary -->
-    <div class="portfolio-summary">
-        <h2>Portfolio Overview</h2>
-        <div class="summary-grid">
-            <div class="summary-card">
-                <h3>Total Portfolio Value</h3>
-                <div class="value">€${balance != null ? balance : '0.00'}</div>
-                <div class="change positive">+12.5% this month</div>
-            </div>
-            <div class="summary-card">
-                <h3>Total Invested</h3>
-                <div class="value">€45,230</div>
-                <div class="change positive">+5.2% ROI</div>
-            </div>
-            <div class="summary-card">
-                <h3>Monthly Returns</h3>
-                <div class="value">€2,150</div>
-                <div class="change positive">+8.3% vs last month</div>
+    <header class="header">
+        <div class="header-content">
+            <a href="/homepage" class="logo"><span>CARMA</span> Banking</a>
+            <div class="header-actions">
+                <div class="user-info">
+                    <div class="user-avatar">${username.substring(0,1).toUpperCase()}</div>
+                    <span>${username}</span>
+                </div>
+                <a href="/logout" class="btn-logout">Logout</a>
             </div>
         </div>
-    </div>
+    </header>
 
-    <!-- Investment Categories -->
-    <div class="investments-grid">
-        <div class="investment-card">
-            <div class="investment-header">
-                <div class="investment-icon icon-stocks">📈</div>
-                <div class="investment-info">
-                    <h3>Stocks</h3>
-                    <p>Diversified portfolio</p>
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Investment Portfolio</h1>
+            <p class="page-subtitle">Manage and track your investments</p>
+        </div>
+
+        <div class="portfolio-summary">
+            <h2>Portfolio Overview</h2>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <h3>Total Portfolio Value</h3>
+                    <div class="value">EUR ${balance != null ? balance : '0.00'}</div>
+                    <div class="change positive">+12.5% this month</div>
                 </div>
-            </div>
-            <div class="investment-stats">
-                <div class="stat">
-                    <div class="stat-label">Holdings</div>
-                    <div class="stat-value">12</div>
+                <div class="summary-card">
+                    <h3>Total Invested</h3>
+                    <div class="value">EUR 45,230</div>
+                    <div class="change positive">+5.2% ROI</div>
                 </div>
-                <div class="stat">
-                    <div class="stat-label">Value</div>
-                    <div class="stat-value">€25,450</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-label">Return</div>
-                    <div class="stat-value change positive">+15.2%</div>
+                <div class="summary-card">
+                    <h3>Monthly Returns</h3>
+                    <div class="value">EUR 2,150</div>
+                    <div class="change positive">+8.3% vs last month</div>
                 </div>
             </div>
         </div>
 
-        <div class="investment-card">
-            <div class="investment-header">
-                <div class="investment-icon icon-crypto">₿</div>
-                <div class="investment-info">
-                    <h3>Cryptocurrency</h3>
-                    <p>Digital assets</p>
+        <div class="investments-grid">
+            <div class="investment-card">
+                <div class="investment-header">
+                    <div class="investment-icon icon-stocks">ST</div>
+                    <div class="investment-info">
+                        <h3>Stocks</h3>
+                        <p>Diversified portfolio</p>
+                    </div>
+                </div>
+                <div class="investment-stats">
+                    <div class="stat">
+                        <div class="stat-label">Holdings</div>
+                        <div class="stat-value">12</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Value</div>
+                        <div class="stat-value">EUR 25,450</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Return</div>
+                        <div class="stat-value positive">+15.2%</div>
+                    </div>
                 </div>
             </div>
-            <div class="investment-stats">
-                <div class="stat">
-                    <div class="stat-label">Holdings</div>
-                    <div class="stat-value">5</div>
+
+            <div class="investment-card">
+                <div class="investment-header">
+                    <div class="investment-icon icon-crypto">CR</div>
+                    <div class="investment-info">
+                        <h3>Cryptocurrency</h3>
+                        <p>Digital assets</p>
+                    </div>
                 </div>
-                <div class="stat">
-                    <div class="stat-label">Value</div>
-                    <div class="stat-value">€12,340</div>
+                <div class="investment-stats">
+                    <div class="stat">
+                        <div class="stat-label">Holdings</div>
+                        <div class="stat-value">5</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Value</div>
+                        <div class="stat-value">EUR 12,340</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Return</div>
+                        <div class="stat-value positive">+28.4%</div>
+                    </div>
                 </div>
-                <div class="stat">
-                    <div class="stat-label">Return</div>
-                    <div class="stat-value change positive">+28.4%</div>
+            </div>
+
+            <div class="investment-card">
+                <div class="investment-header">
+                    <div class="investment-icon icon-bonds">BO</div>
+                    <div class="investment-info">
+                        <h3>Bonds</h3>
+                        <p>Fixed income securities</p>
+                    </div>
+                </div>
+                <div class="investment-stats">
+                    <div class="stat">
+                        <div class="stat-label">Holdings</div>
+                        <div class="stat-value">8</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Value</div>
+                        <div class="stat-value">EUR 15,890</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Return</div>
+                        <div class="stat-value positive">+4.1%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="investment-card">
+                <div class="investment-header">
+                    <div class="investment-icon icon-funds">MF</div>
+                    <div class="investment-info">
+                        <h3>Mutual Funds</h3>
+                        <p>Managed portfolios</p>
+                    </div>
+                </div>
+                <div class="investment-stats">
+                    <div class="stat">
+                        <div class="stat-label">Holdings</div>
+                        <div class="stat-value">6</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Value</div>
+                        <div class="stat-value">EUR 18,670</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Return</div>
+                        <div class="stat-value positive">+9.8%</div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="investment-card">
-            <div class="investment-header">
-                <div class="investment-icon icon-bonds">📊</div>
-                <div class="investment-info">
-                    <h3>Bonds</h3>
-                    <p>Fixed income securities</p>
-                </div>
-            </div>
-            <div class="investment-stats">
-                <div class="stat">
-                    <div class="stat-label">Holdings</div>
-                    <div class="stat-value">8</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-label">Value</div>
-                    <div class="stat-value">€15,890</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-label">Return</div>
-                    <div class="stat-value change positive">+4.1%</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="investment-card">
-            <div class="investment-header">
-                <div class="investment-icon icon-funds">💼</div>
-                <div class="investment-info">
-                    <h3>Mutual Funds</h3>
-                    <p>Managed portfolios</p>
-                </div>
-            </div>
-            <div class="investment-stats">
-                <div class="stat">
-                    <div class="stat-label">Holdings</div>
-                    <div class="stat-value">6</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-label">Value</div>
-                    <div class="stat-value">€18,670</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-label">Return</div>
-                    <div class="stat-value change positive">+9.8%</div>
-                </div>
-            </div>
+        <div class="action-buttons">
+            <button class="action-btn btn-primary" onclick="alert('Investment feature coming soon!')">New Investment</button>
+            <button class="action-btn btn-secondary" onclick="window.location.href='/homepage'">Back to Dashboard</button>
         </div>
     </div>
-
-    <!-- Action Buttons -->
-    <div class="action-buttons">
-        <button class="action-btn btn-primary" onclick="alert('Investment feature coming soon!')">New Investment</button>
-        <button class="action-btn btn-secondary" onclick="window.location.href='/homepage'">Back to Dashboard</button>
-    </div>
-</div>
-
 </body>
 </html>
