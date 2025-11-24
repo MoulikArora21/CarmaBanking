@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - CARMA Banking</title>
+    <title>Reset Password - CARMA Banking</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -57,7 +57,7 @@
         }
 
         h1 {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 700;
             color: #2d3748;
             margin-bottom: 8px;
@@ -67,13 +67,14 @@
             color: #718096;
             margin-bottom: 32px;
             font-size: 16px;
+            line-height: 1.5;
         }
 
         .form-group {
             margin-bottom: 20px;
         }
 
-        input[type="text"], input[type="password"] {
+        input[type="password"] {
             width: 100%;
             padding: 14px 20px;
             border: 1px solid #e2e8f0;
@@ -84,11 +85,29 @@
             box-sizing: border-box;
         }
 
-        input[type="text"]:focus, input[type="password"]:focus {
+        input[type="password"]:focus {
             outline: none;
             border-color: #667eea;
             background: white;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .password-strength {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .password-strength.weak {
+            color: #e53e3e;
+        }
+
+        .password-strength.medium {
+            color: #dd6b20;
+        }
+
+        .password-strength.strong {
+            color: #38a169;
         }
 
         .btn {
@@ -115,24 +134,11 @@
             box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
         }
 
-        .btn-secondary {
-            background: #f7fafc;
-            color: #4a5568;
-            border: 1px solid #e2e8f0;
-        }
-
-        .btn-secondary:hover {
-            background: #edf2f7;
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: #4a5568;
-            border: 1px solid #e2e8f0;
-        }
-
-        .btn-outline:hover {
-            background: #f7fafc;
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
         }
 
         .success-message {
@@ -153,23 +159,68 @@
             background: #fed7d7;
             border-radius: 8px;
             border: 1px solid #feb2b2;
-            word-wrap: break-word;
-            text-align: center;
         }
 
-        .links {
-            margin-top: 24px;
+        .requirements {
+            text-align: left;
+            margin-top: 16px;
+            padding: 16px;
+            background: #f7fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
         }
 
-        .links a {
-            color: #667eea;
+        .requirements h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .requirements ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .requirements li {
+            font-size: 13px;
+            color: #718096;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .requirements li.valid {
+            color: #38a169;
+        }
+
+        .requirements li.valid::before {
+            content: "✓";
+            color: #38a169;
+            font-weight: bold;
+        }
+
+        .requirements li.invalid::before {
+            content: "✗";
+            color: #e53e3e;
+            font-weight: bold;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #718096;
             text-decoration: none;
             font-size: 14px;
-            margin: 0 12px;
+            margin-bottom: 20px;
+            transition: color 0.2s;
         }
 
-        .links a:hover {
-            text-decoration: underline;
+        .back-link:hover {
+            color: #4a5568;
         }
     </style>
 </head>
@@ -200,27 +251,116 @@
     </div>
 
     <div class="container">
-        <h1>Welcome Back</h1>
-        <p class="subtitle">Sign in to your CARMA Banking account</p>
-        <form method="post" action="login">
-            <div class="form-group">
-                <input type="text" name="username" placeholder="Username" required autocomplete="off">
-            </div>
-            <div class="form-group">
-                <input type="password" name="password" placeholder="Password" required autocomplete="off">
-            </div>
-            <button type="submit" class="btn btn-primary">Sign In</button>
-        </form>
-        <div class="links">
-            <a href="/registration">Create Account</a>
-            <a href="/forgot-password">Forgot Password?</a>
-        </div>
-        <c:if test="${not empty errorMessage}">
-            <div class="error-message">${errorMessage}</div>
-        </c:if>
+        <a href="/login" class="back-link">
+            <i class="ri-arrow-left-line"></i>
+            Back to Login
+        </a>
+        <h1>Set New Password</h1>
+        <p class="subtitle">Create a strong password for your account.</p>
+
         <c:if test="${not empty successMessage}">
             <div class="success-message">${successMessage}</div>
         </c:if>
+
+        <c:if test="${not empty errorMessage}">
+            <div class="error-message">${errorMessage}</div>
+        </c:if>
+
+        <form method="post" action="reset-password" id="resetForm">
+            <input type="hidden" name="token" value="${token}">
+
+            <div class="form-group">
+                <input type="password" name="password" id="password" placeholder="New password" required autocomplete="new-password">
+            </div>
+
+            <div class="form-group">
+                <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm new password" required autocomplete="new-password">
+            </div>
+
+            <div class="password-strength" id="passwordStrength"></div>
+
+            <div class="requirements">
+                <h4>Password Requirements:</h4>
+                <ul>
+                    <li id="length" class="invalid">At least 8 characters</li>
+                    <li id="uppercase" class="invalid">One uppercase letter</li>
+                    <li id="lowercase" class="invalid">One lowercase letter</li>
+                    <li id="number" class="invalid">One number</li>
+                    <li id="special" class="invalid">One special character</li>
+                </ul>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="submitBtn" disabled>Set Password</button>
+        </form>
+
+        <div class="links" style="margin-top: 24px;">
+            <a href="/login">Back to Login</a>
+        </div>
     </div>
+
+    <script>
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const submitBtn = document.getElementById('submitBtn');
+        const passwordStrength = document.getElementById('passwordStrength');
+
+        function checkPasswordStrength() {
+            const value = password.value;
+            const requirements = {
+                length: value.length >= 8,
+                uppercase: /[A-Z]/.test(value),
+                lowercase: /[a-z]/.test(value),
+                number: /\d/.test(value),
+                special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value)
+            };
+
+            // Update requirement indicators
+            Object.keys(requirements).forEach(req => {
+                const element = document.getElementById(req);
+                element.className = requirements[req] ? 'valid' : 'invalid';
+            });
+
+            // Calculate strength
+            const validCount = Object.values(requirements).filter(Boolean).length;
+            let strength = '';
+            let strengthClass = '';
+
+            if (validCount < 3) {
+                strength = 'Weak';
+                strengthClass = 'weak';
+            } else if (validCount < 5) {
+                strength = 'Medium';
+                strengthClass = 'medium';
+            } else {
+                strength = 'Strong';
+                strengthClass = 'strong';
+            }
+
+            passwordStrength.textContent = `Password strength: ${strength}`;
+            passwordStrength.className = `password-strength ${strengthClass}`;
+
+            return validCount === 5;
+        }
+
+        function validateForm() {
+            const passwordsMatch = password.value === confirmPassword.value;
+            const isStrong = checkPasswordStrength();
+            const isFilled = password.value.length > 0 && confirmPassword.value.length > 0;
+
+            submitBtn.disabled = !(isStrong && passwordsMatch && isFilled);
+
+            if (password.value && confirmPassword.value && !passwordsMatch) {
+                confirmPassword.setCustomValidity("Passwords don't match");
+            } else {
+                confirmPassword.setCustomValidity('');
+            }
+        }
+
+        password.addEventListener('input', validateForm);
+        confirmPassword.addEventListener('input', validateForm);
+
+        // Initial validation
+        validateForm();
+    </script>
 </body>
 </html>

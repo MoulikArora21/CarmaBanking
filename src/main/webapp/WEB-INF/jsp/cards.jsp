@@ -44,17 +44,25 @@
 
         /* Card Preview */
         .card-preview-section { background: white; border-radius: 16px; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; }
-        .card-visual { width: 100%; max-width: 400px; aspect-ratio: 1.586; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; padding: 24px; color: white; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3); position: relative; overflow: hidden; }
+        .card-visual { width: 100%; max-width: 400px; aspect-ratio: 1.586; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; padding: 24px; color: white; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3); position: relative; overflow: hidden; transition: all 0.3s ease; }
         .card-visual::before { content: ''; position: absolute; top: -50%; right: -50%; width: 100%; height: 100%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); }
+        .card-visual.frozen { filter: grayscale(100%) brightness(0.6); opacity: 0.8; }
+        .card-visual.frozen::after { content: 'FROZEN'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: 700; color: rgba(255,255,255,0.8); text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
         .card-chip { width: 48px; height: 36px; background: linear-gradient(135deg, #f7b731 0%, #ffd93d 100%); border-radius: 6px; margin-bottom: 24px; position: relative; }
         .card-chip::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 36px; height: 24px; border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; }
         .card-number { font-size: 24px; font-weight: 600; letter-spacing: 3px; margin: 20px 0; font-family: 'Courier New', monospace; }
-        .card-info { display: flex; justify-content: space-between; align-items: flex-end; }
+        .card-info { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 16px; }
         .card-holder { display: flex; flex-direction: column; gap: 4px; }
         .card-label { font-size: 10px; text-transform: uppercase; opacity: 0.8; letter-spacing: 1px; }
         .card-value { font-size: 14px; font-weight: 600; }
         .card-expiry { text-align: right; }
-        .card-logo { position: absolute; bottom: 24px; right: 24px; font-weight: 700; font-size: 20px; opacity: 0.9; }
+        .card-logo { position: absolute; bottom: 16px; right: 16px; font-weight: 700; font-size: 18px; opacity: 0.9; }
+        .contactless-icon { position: absolute; top: 16px; right: 16px; width: 28px; height: 28px; background: rgba(255,255,255,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #333; font-size: 14px; opacity: 0; transition: opacity 0.3s ease; }
+        .contactless-icon.active { opacity: 1; }
+        .international-icon { position: absolute; top: 16px; right: 52px; width: 28px; height: 28px; background: rgba(255,255,255,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #333; font-size: 14px; opacity: 0; transition: opacity 0.3s ease; }
+        .international-icon.active { opacity: 1; }
+        .online-icon { position: absolute; top: 16px; right: 88px; width: 28px; height: 28px; background: rgba(255,255,255,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #333; font-size: 14px; opacity: 0; transition: opacity 0.3s ease; }
+        .online-icon.active { opacity: 1; }
 
         /* Settings Panel */
         .settings-section { background: white; border-radius: 16px; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; }
@@ -109,7 +117,6 @@
         @media (max-width: 768px) {
             .header-content { padding: 0 16px; }
             .user-info { display: none; }
-            .menu-toggle { display: flex; }
             .container { padding: 24px 16px; }
             .page-title { font-size: 24px; }
             .card-number { font-size: 18px; }
@@ -182,10 +189,19 @@
         <div class="card-display-container">
             <!-- Card Preview -->
             <div class="card-preview-section">
-                <div class="card-visual">
+                <div class="card-visual" id="cardVisual">
+                    <div class="international-icon" id="internationalIcon">
+                        <i class="ri-earth-line"></i>
+                    </div>
+                    <div class="contactless-icon" id="contactlessIcon">
+                        <i class="ri-wifi-line"></i>
+                    </div>
+                    <div class="online-icon" id="onlineIcon">
+                        <i class="ri-global-line"></i>
+                    </div>
                     <div>
                         <div class="card-chip"></div>
-                        <div class="card-number">**** **** **** 4829</div>
+                        <div class="card-number" id="cardNumber">**** **** **** 4829</div>
                     </div>
                     <div class="card-info">
                         <div class="card-holder">
@@ -197,6 +213,7 @@
                             <span class="card-value">12/28</span>
                         </div>
                     </div>
+                    <div class="card-logo">CARMA</div>
                 </div>
             </div>
 
@@ -246,7 +263,7 @@
 
                 <div class="setting-item">
                     <div class="setting-label">CVV</div>
-                    <div class="setting-value">****</div>
+                    <div class="setting-value" id="cvvDisplay" style="cursor: pointer; user-select: none;" onclick="toggleCVV()">****</div>
                 </div>
 
                 <div class="setting-item">
@@ -255,7 +272,8 @@
                 </div>
 
                 <div class="card-actions">
-                    <button class="btn-primary">View PIN</button>
+                    <button class="btn-primary" onclick="viewCardDetails()">View Card Details</button>
+                    <button class="btn-primary" onclick="viewPIN()">View CVV</button>
                     <button class="btn-secondary">Order Replacement Card</button>
                     <button class="btn-secondary">Report Lost or Stolen</button>
                 </div>
@@ -305,6 +323,98 @@
             const sidebar = document.getElementById('menuSidebar');
             if (sidebar && !sidebar.contains(event.target) && !event.target.closest('.menu-toggle')) {
                 sidebar.classList.remove('open');
+            }
+        });
+
+        // Card functionality
+        let cvvVisible = false;
+        let cardDetailsVisible = false;
+        const fullCardNumber = "4532 1234 5678 4829";
+        const cvvCode = "123";
+        const pinCode = "4829";
+
+        function toggleCVV() {
+            const cvvDisplay = document.getElementById('cvvDisplay');
+            cvvVisible = !cvvVisible;
+            cvvDisplay.textContent = cvvVisible ? cvvCode : '****';
+            cvvDisplay.style.color = cvvVisible ? '#38a169' : '#718096';
+        }
+
+        function viewCardDetails() {
+            const cardNumber = document.getElementById('cardNumber');
+            cardDetailsVisible = !cardDetailsVisible;
+            cardNumber.textContent = cardDetailsVisible ? fullCardNumber : '**** **** **** 4829';
+            cardNumber.style.color = cardDetailsVisible ? '#38a169' : 'white';
+        }
+
+        function viewPIN() {
+            const cvvDisplay = document.getElementById('cvvDisplay');
+            cvvDisplay.textContent = cvvCode;
+            cvvDisplay.style.color = '#38a169';
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                cvvDisplay.textContent = '****';
+                cvvDisplay.style.color = '#718096';
+            }, 5000);
+        }
+
+        // Handle toggle switches
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggles = document.querySelectorAll('.toggle-switch input');
+
+            toggles.forEach(toggle => {
+                toggle.addEventListener('change', function() {
+                    const settingLabel = this.closest('.setting-item').querySelector('.setting-label').textContent;
+
+                    if (settingLabel === 'Card Status') {
+                        const cardVisual = document.getElementById('cardVisual');
+                        if (this.checked) {
+                            cardVisual.classList.remove('frozen');
+                        } else {
+                            cardVisual.classList.add('frozen');
+                        }
+                    } else if (settingLabel === 'Contactless Payments') {
+                        const contactlessIcon = document.getElementById('contactlessIcon');
+                        if (this.checked) {
+                            contactlessIcon.classList.add('active');
+                        } else {
+                            contactlessIcon.classList.remove('active');
+                        }
+                    } else if (settingLabel === 'International Transactions') {
+                        const internationalIcon = document.getElementById('internationalIcon');
+                        if (this.checked) {
+                            internationalIcon.classList.add('active');
+                        } else {
+                            internationalIcon.classList.remove('active');
+                        }
+                    } else if (settingLabel === 'Online Payments') {
+                        const onlineIcon = document.getElementById('onlineIcon');
+                        if (this.checked) {
+                            onlineIcon.classList.add('active');
+                        } else {
+                            onlineIcon.classList.remove('active');
+                        }
+                    }
+                });
+            });
+
+            // Initialize icons if toggles are checked
+            const contactlessToggle = document.querySelector('.setting-item:nth-child(2) .toggle-switch input');
+            if (contactlessToggle && contactlessToggle.checked) {
+                document.getElementById('contactlessIcon').classList.add('active');
+            }
+
+            const onlineToggle = document.querySelector('.setting-item:nth-child(3) .toggle-switch input');
+            if (onlineToggle && onlineToggle.checked) {
+                document.getElementById('onlineIcon').classList.add('active');
+            }
+
+            const internationalToggle = document.querySelector('.setting-item:nth-child(4) .toggle-switch input');
+            if (internationalToggle && internationalToggle.checked) {
+                document.getElementById('internationalIcon').classList.add('active');
+            } else {
+                // Explicitly ensure international icon is hidden if toggle is off
+                document.getElementById('internationalIcon').classList.remove('active');
             }
         });
     </script>

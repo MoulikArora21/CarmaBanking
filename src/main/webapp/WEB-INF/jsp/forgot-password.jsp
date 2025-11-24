@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - CARMA Banking</title>
+    <title>Forgot Password - CARMA Banking</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -57,7 +57,7 @@
         }
 
         h1 {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 700;
             color: #2d3748;
             margin-bottom: 8px;
@@ -67,13 +67,14 @@
             color: #718096;
             margin-bottom: 32px;
             font-size: 16px;
+            line-height: 1.5;
         }
 
         .form-group {
             margin-bottom: 20px;
         }
 
-        input[type="text"], input[type="password"] {
+        input[type="email"] {
             width: 100%;
             padding: 14px 20px;
             border: 1px solid #e2e8f0;
@@ -84,7 +85,7 @@
             box-sizing: border-box;
         }
 
-        input[type="text"]:focus, input[type="password"]:focus {
+        input[type="email"]:focus {
             outline: none;
             border-color: #667eea;
             background: white;
@@ -125,16 +126,6 @@
             background: #edf2f7;
         }
 
-        .btn-outline {
-            background: transparent;
-            color: #4a5568;
-            border: 1px solid #e2e8f0;
-        }
-
-        .btn-outline:hover {
-            background: #f7fafc;
-        }
-
         .success-message {
             color: #38a169;
             font-size: 14px;
@@ -153,23 +144,39 @@
             background: #fed7d7;
             border-radius: 8px;
             border: 1px solid #feb2b2;
-            word-wrap: break-word;
-            text-align: center;
         }
 
         .links {
             margin-top: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
         }
 
         .links a {
             color: #667eea;
             text-decoration: none;
             font-size: 14px;
-            margin: 0 12px;
         }
 
         .links a:hover {
             text-decoration: underline;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #718096;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 20px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: #4a5568;
         }
     </style>
 </head>
@@ -200,27 +207,32 @@
     </div>
 
     <div class="container">
-        <h1>Welcome Back</h1>
-        <p class="subtitle">Sign in to your CARMA Banking account</p>
-        <form method="post" action="login">
-            <div class="form-group">
-                <input type="text" name="username" placeholder="Username" required autocomplete="off">
-            </div>
-            <div class="form-group">
-                <input type="password" name="password" placeholder="Password" required autocomplete="off">
-            </div>
-            <button type="submit" class="btn btn-primary">Sign In</button>
-        </form>
-        <div class="links">
-            <a href="/registration">Create Account</a>
-            <a href="/forgot-password">Forgot Password?</a>
-        </div>
-        <c:if test="${not empty errorMessage}">
-            <div class="error-message">${errorMessage}</div>
-        </c:if>
+        <a href="/login" class="back-link">
+            <i class="ri-arrow-left-line"></i>
+            Back to Login
+        </a>
+        <h1>Reset Password</h1>
+        <p class="subtitle">Enter your email address and we'll send you a link to reset your password.</p>
+
         <c:if test="${not empty successMessage}">
             <div class="success-message">${successMessage}</div>
         </c:if>
+
+        <c:if test="${not empty errorMessage}">
+            <div class="error-message">${errorMessage}</div>
+        </c:if>
+
+        <form method="post" action="forgot-password">
+            <div class="form-group">
+                <input type="email" name="email" placeholder="Enter your email address" required autocomplete="off">
+            </div>
+            <button type="submit" class="btn btn-primary">Send Reset Link</button>
+        </form>
+
+        <div class="links">
+            <a href="/login">Remember your password?</a>
+            <a href="/registration">Create Account</a>
+        </div>
     </div>
 </body>
 </html>

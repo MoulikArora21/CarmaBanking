@@ -1,25 +1,36 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transactions - CARMA Banking</title>
+    <title>Edit Details - CARMA Banking</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f8f9fa; color: #1a202c; }
-        .header { background: white; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        body { font-family: 'Inter', sans-serif; background: #f8f9fa; color: #1a202c; min-height: 100vh; }
+
+        /* Header */
+        .header { background: white; border-bottom: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
         .header-content { max-width: 1400px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 72px; }
         .logo-link { display: flex; align-items: center; text-decoration: none; transition: opacity 0.2s; }
         .logo-link:hover { opacity: 0.8; }
         .header-actions { display: flex; align-items: center; gap: 16px; }
         .notification-container { position: relative; }
-        .notification-bell { width: 40px; height: 40px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; position: relative; }
+        .notification-bell { width: 40px; height: 40px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
         .notification-bell:hover { background: #edf2f7; border-color: #667eea; }
+        .user-info { display: flex; align-items: center; gap: 12px; padding: 8px 16px; background: #f7fafc; border-radius: 12px; cursor: pointer; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 16px; }
+        .user-container { position: relative; }
+        .user-dropdown { position: absolute; top: 100%; right: 0; background: white; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); border: 1px solid #e2e8f0; display: none; min-width: 180px; z-index: 1000; }
+        .user-dropdown.open { display: block; }
+        .dropdown-item { display: block; padding: 12px 16px; color: #4a5568; text-decoration: none; transition: background 0.2s; }
+        .menu-toggle:hover { background: #edf2f7; border-color: #667eea; }
+        .menu-toggle { display: flex; cursor: pointer; width: 40px; height: 40px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 50%; align-items: center; justify-content: center; transition: all 0.2s; }
+
+        /* Notification Dropdown */
         .notification-dropdown { position: absolute; top: 50px; right: 0; width: 320px; background: white; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); border: 1px solid #e2e8f0; display: none; z-index: 1000; }
         .notification-dropdown.open { display: block; }
         .notification-header { padding: 16px 20px; border-bottom: 1px solid #e2e8f0; font-weight: 600; font-size: 15px; color: #2d3748; }
@@ -28,48 +39,6 @@
         .notification-item:hover { background: #f7fafc; }
         .notification-item:last-child { border-bottom: none; }
         .notification-text { font-size: 14px; color: #4a5568; line-height: 1.5; text-align: center; padding: 24px 0; }
-        .user-info { display: flex; align-items: center; gap: 12px; padding: 8px 16px; background: #f7fafc; border-radius: 12px; }
-        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 16px; }
-        .btn-logout { padding: 10px 20px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; color: #4a5568; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; text-decoration: none; }
-        .btn-logout:hover { background: #f7fafc; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
-        .page-header { margin-bottom: 32px; }
-        .page-title { font-size: 32px; font-weight: 700; color: #2d3748; margin-bottom: 8px; }
-        .page-subtitle { color: #718096; font-size: 16px; }
-        .transactions-card { background: white; border-radius: 16px; padding: 32px; border: 1px solid #e2e8f0; }
-        .filter-bar { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
-        .filter-btn { padding: 10px 20px; border-radius: 8px; border: 1px solid #e2e8f0; background: white; color: #4a5568; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-        .filter-btn.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-color: transparent; }
-        .transaction-list { display: flex; flex-direction: column; gap: 12px; }
-        .transaction-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: #f7fafc; border-radius: 12px; transition: all 0.2s; }
-        .transaction-item:hover { background: #edf2f7; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .transaction-info { display: flex; align-items: center; gap: 16px; }
-        .transaction-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; }
-        .icon-received { background: #c6f6d5; color: #22543d; }
-        .icon-sent { background: #fed7d7; color: #742a2a; }
-        .transaction-details h4 { font-size: 16px; font-weight: 600; color: #2d3748; margin-bottom: 4px; }
-        .transaction-details p { font-size: 14px; color: #718096; }
-        .transaction-amount { text-align: right; }
-        .amount { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-        .amount.positive { color: #38a169; }
-        .amount.negative { color: #e53e3e; }
-        .transaction-date { font-size: 13px; color: #a0aec0; }
-        .empty-state { text-align: center; padding: 64px 24px; color: #a0aec0; }
-        .empty-state h3 { font-size: 20px; color: #4a5568; margin-bottom: 8px; }
-        @media (max-width: 768px) { .header-content { padding: 0 16px; } .user-info { display: none; } .container { padding: 24px 16px; } .page-title { font-size: 24px; } }
-
-        /* User Dropdown */
-        .user-container { position: relative; }
-        .user-info { cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #f7fafc; border-radius: 12px; transition: background 0.2s; }
-        .user-info:hover { background: #edf2f7; }
-        .user-dropdown { position: absolute; top: 100%; right: 0; background: white; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); border: 1px solid #e2e8f0; display: none; min-width: 180px; z-index: 1000; }
-        .user-dropdown.open { display: block; }
-        .dropdown-item { display: block; padding: 12px 16px; color: #4a5568; text-decoration: none; transition: background 0.2s; }
-        .dropdown-item:hover { background: #f7fafc; }
-
-        /* Menu Toggle */
-        .menu-toggle { display: none; cursor: pointer; width: 40px; height: 40px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-        .menu-toggle:hover { background: #edf2f7; border-color: #667eea; }
 
         /* Menu Sidebar */
         .menu-sidebar { position: fixed; top: 0; right: -300px; width: 300px; height: 100vh; background: white; box-shadow: -4px 0 16px rgba(0,0,0,0.12); transition: right 0.3s; z-index: 1001; }
@@ -80,6 +49,35 @@
         .menu-sidebar-content { padding: 16px 0; }
         .menu-item { display: block; padding: 12px 24px; color: #4a5568; text-decoration: none; transition: background 0.2s; }
         .menu-item:hover { background: #f7fafc; }
+
+        /* Container */
+        .container { max-width: 800px; margin: 0 auto; padding: 32px 24px; }
+        .page-header { text-align: center; margin-bottom: 32px; }
+        .page-title { font-size: 32px; font-weight: 700; color: #2d3748; margin-bottom: 8px; }
+        .page-subtitle { color: #718096; font-size: 16px; }
+
+        /* Form */
+        .form-card { background: white; border-radius: 16px; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-size: 14px; font-weight: 500; color: #4a5568; }
+        .form-group input { padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+        .form-group input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+        .error { color: #e53e3e; font-size: 12px; margin-top: 4px; }
+        .success-message { background: #c6f6d5; border: 1px solid #9ae6b4; color: #22543d; padding: 12px; border-radius: 8px; margin-bottom: 20px; }
+        
+        .btn-group { display: flex; gap: 12px; justify-content: flex-end; padding-top: 20px; border-top: 1px solid #e2e8f0; }
+        .btn { padding: 12px 24px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
+        .btn-secondary { background: #f7fafc; color: #4a5568; border: 1px solid #e2e8f0; }
+        .btn-secondary:hover { background: #edf2f7; }
+
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .container { padding: 24px 16px; }
+            .user-info { display: none; }
+        }
     </style>
 </head>
 <body>
@@ -138,60 +136,59 @@
             </div>
         </div>
     </header>
+
     <div class="container">
         <div class="page-header">
-            <h1 class="page-title">Transaction History</h1>
-            <p class="page-subtitle">View all your account transactions</p>
+            <h1 class="page-title">Edit Your Details</h1>
+            <p class="page-subtitle">Update your personal information</p>
         </div>
-        <div class="transactions-card">
-            <div class="filter-bar">
-                <button class="filter-btn active">All</button>
-                <button class="filter-btn">Received</button>
-                <button class="filter-btn">Sent</button>
-            </div>
-            <c:choose>
-                <c:when test="${not empty transactionsinjsp}">
-                    <div class="transaction-list">
-                        <c:forEach var="transaction" items="${transactionsinjsp}">
-                            <div class="transaction-item">
-                                <div class="transaction-info">
-                                    <div class="transaction-icon ${transaction.type == 'Credit' ? 'icon-received' : 'icon-sent'}">
-                                        <c:choose>
-                                            <c:when test="${transaction.type == 'Credit'}">+</c:when>
-                                            <c:otherwise>-</c:otherwise>
-                                        </c:choose>
-                                    </div>
-                                    <div class="transaction-details">
-                                        <h4>${transaction.type == 'Credit' ? 'Received' : 'Sent'}</h4>
-                                        <p>
-                                            <c:choose>
-                                                <c:when test="${transaction.type == 'Credit'}">From ${transaction.senderUsername}</c:when>
-                                                <c:otherwise>To ${transaction.recipientUsername}</c:otherwise>
-                                            </c:choose>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="transaction-amount">
-                                    <div class="amount ${transaction.type == 'Credit' ? 'positive' : 'negative'}">
-                                        <c:choose>
-                                            <c:when test="${transaction.type == 'Credit'}">+</c:when>
-                                            <c:otherwise>-</c:otherwise>
-                                        </c:choose>
-                                        EUR ${transaction.amount}
-                                    </div>
-                                    <div class="transaction-date">${transaction.date.toLocalDate()}</div>
-                                </div>
-                            </div>
-                        </c:forEach>
+
+        <div class="form-card">
+            <c:if test="${not empty errorMessage}">
+                <div class="error" style="background: #fed7d7; border: 1px solid #fc8181; padding: 12px; border-radius: 8px; margin-bottom: 20px;">${errorMessage}</div>
+            </c:if>
+
+            <form method="post" action="/edit-details">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>First Name *</label>
+                        <input type="text" name="name" value="${user.name}" autocomplete="off" required/>
                     </div>
-                </c:when>
-                <c:otherwise>
-                    <div class="empty-state">
-                        <h3>No transactions yet</h3>
-                        <p>Your transaction history will appear here</p>
+                    <div class="form-group">
+                        <label>Surname *</label>
+                        <input type="text" name="surname" value="${user.surname}" autocomplete="off" required/>
                     </div>
-                </c:otherwise>
-            </c:choose>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" name="email" value="${user.email}" autocomplete="off" required/>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="text" name="phone_number" value="${user.phone_number}" autocomplete="off" required/>
+                    </div>
+                    <div class="form-group">
+                        <label>Country *</label>
+                        <input type="text" name="country" value="${user.country}" autocomplete="off" required/>
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" name="address" value="${user.address}" autocomplete="off"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Personal ID</label>
+                        <input type="text" name="personalid" value="${user.personalid}" autocomplete="off"/>
+                    </div>
+                    <div class="form-group">
+                        <label>New Password (leave blank to keep current)</label>
+                        <input type="password" name="newPassword" autocomplete="off"/>
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='/account-management'">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -199,7 +196,7 @@
     <div class="menu-sidebar" id="menuSidebar">
         <div class="menu-sidebar-header">
             <h3>Menu</h3>
-            <button class="close-btn" onclick="toggleMenuSidebar()">&times;</button>
+            <button onclick="toggleMenuSidebar()" class="close-btn">&times;</button>
         </div>
         <div class="menu-sidebar-content">
             <a href="/cards" class="menu-item">My Cards</a>
@@ -223,52 +220,22 @@
             const sidebar = document.getElementById('menuSidebar');
             sidebar.classList.toggle('open');
         }
-
-        // Close dropdowns when clicking outside
+        
         document.addEventListener('click', function(event) {
-            const container = document.querySelector('.notification-container');
-            if (container && !container.contains(event.target)) {
+            const notificationContainer = document.querySelector('.notification-container');
+            const userContainer = document.querySelector('.user-container');
+            const menuToggle = document.querySelector('.menu-toggle');
+            const menuSidebar = document.querySelector('.menu-sidebar');
+
+            if (!notificationContainer.contains(event.target)) {
                 document.getElementById('notificationDropdown').classList.remove('open');
             }
-            const userContainer = document.querySelector('.user-container');
-            if (userContainer && !userContainer.contains(event.target)) {
+            if (!userContainer.contains(event.target)) {
                 document.getElementById('userDropdown').classList.remove('open');
             }
-            const sidebar = document.getElementById('menuSidebar');
-            if (sidebar && !sidebar.contains(event.target) && !event.target.closest('.menu-toggle')) {
-                sidebar.classList.remove('open');
+            if (!menuToggle.contains(event.target) && !menuSidebar.contains(event.target)) {
+                document.getElementById('menuSidebar').classList.remove('open');
             }
-        });
-
-        // Transaction filtering functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const filterButtons = document.querySelectorAll('.filter-btn');
-            const transactionItems = document.querySelectorAll('.transaction-item');
-
-            filterButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Remove active class from all buttons
-                    filterButtons.forEach(btn => btn.classList.remove('active'));
-                    // Add active class to clicked button
-                    this.classList.add('active');
-
-                    const filterType = this.textContent.toLowerCase();
-
-                    transactionItems.forEach(item => {
-                        const transactionType = item.querySelector('.transaction-details h4').textContent.toLowerCase();
-
-                        if (filterType === 'all') {
-                            item.style.display = 'flex';
-                        } else if (filterType === 'received' && transactionType === 'received') {
-                            item.style.display = 'flex';
-                        } else if (filterType === 'sent' && transactionType === 'sent') {
-                            item.style.display = 'flex';
-                        } else {
-                            item.style.display = 'none';
-                        }
-                    });
-                });
-            });
         });
     </script>
 </body>

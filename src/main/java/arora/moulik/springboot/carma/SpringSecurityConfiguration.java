@@ -30,7 +30,9 @@ public class SpringSecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/registration", "/otpverify", "/otpresend").permitAll()
+                        .requestMatchers("/", "/login", "/registration", "/otpverify", "/otpresend",
+                                "/forgot-password", "/reset-password")
+                        .permitAll()
                         .anyRequest().authenticated())
                 .logout(logout -> logout
                         .logoutUrl("/logout")

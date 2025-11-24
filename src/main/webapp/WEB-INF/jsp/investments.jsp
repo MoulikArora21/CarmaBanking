@@ -42,7 +42,7 @@
         .summary-card:hover { transform: translateY(-4px); }
         .summary-card h3 { font-size: 14px; opacity: 0.95; margin-bottom: 12px; font-weight: 500; }
         .summary-card .value { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
-        .summary-card .change { font-size: 14px; opacity: 0.9; }
+        .summary-card .change { font-size: 16px; opacity: 0.95; font-weight: 600; margin-top: 8px; padding: 4px 8px; background: rgba(255,255,255,0.2); border-radius: 6px; display: inline-block; animation: pulse 2s infinite; color: white !important; }
         .investments-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 32px; }
         .investment-card { background: white; border-radius: 16px; padding: 28px; border: 1px solid #e2e8f0; transition: all 0.2s; cursor: pointer; }
         .investment-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
@@ -58,8 +58,8 @@
         .stat { text-align: center; }
         .stat-label { font-size: 12px; color: #a0aec0; margin-bottom: 6px; }
         .stat-value { font-size: 18px; font-weight: 700; color: #2d3748; }
-        .positive { color: #38a169; }
-        .negative { color: #e53e3e; }
+        .positive { color: #48bb78 !important; font-weight: 700; }
+        .negative { color: #f56565 !important; font-weight: 700; }
         .action-buttons { display: flex; gap: 16px; justify-content: center; }
         .action-btn { padding: 12px 32px; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
         .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
@@ -67,6 +67,37 @@
         .btn-secondary { background: white; color: #667eea; border: 1px solid #e2e8f0; }
         .btn-secondary:hover { background: #f7fafc; }
         @media (max-width: 768px) { .header-content { padding: 0 16px; } .user-info { display: none; } .container { padding: 24px 16px; } .page-title { font-size: 24px; } .investments-grid { grid-template-columns: 1fr; } .action-buttons { flex-direction: column; } .action-btn { width: 100%; } }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
+        .investment-card { background: white; border-radius: 16px; padding: 28px; border: 1px solid #e2e8f0; transition: all 0.3s; cursor: pointer; animation: fadeInUp 0.6s ease-out; }
+        .investment-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+
+        .stat-value.positive { color: #48bb78 !important; animation: slideIn 0.8s ease-out; font-weight: 700; }
+        .stat-value.negative { color: #f56565 !important; }
+
+        .portfolio-summary { background: white; border-radius: 16px; padding: 32px; margin-bottom: 32px; border: 1px solid #e2e8f0; position: relative; overflow: hidden; }
+        .portfolio-summary::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent); animation: shimmer 3s infinite; }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
 
         /* User Dropdown */
         .user-container { position: relative; }
@@ -323,6 +354,96 @@
             if (sidebar && !sidebar.contains(event.target) && !event.target.closest('.menu-toggle')) {
                 sidebar.classList.remove('open');
             }
+        });
+
+        // Dynamic investment updates
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initial values - get balance from the HTML element
+            const balanceElement = document.querySelector('.summary-card .value');
+            let portfolioValue = balanceElement ? parseFloat(balanceElement.textContent.replace('EUR ', '').replace(',', '')) || 0 : 0;
+            let monthlyChange = 12.5;
+            let totalInvested = 45230;
+            let monthlyReturns = 2150;
+
+            // Investment values
+            const investments = [
+                { id: 'stocks', value: 25450, change: 15.2 },
+                { id: 'crypto', value: 12340, change: 28.4 },
+                { id: 'bonds', value: 15890, change: 4.1 },
+                { id: 'funds', value: 18670, change: 9.8 }
+            ];
+
+            function updatePortfolioSummary() {
+                // Simulate small random changes
+                const change = (Math.random() - 0.5) * 0.1; // -0.05 to +0.05
+                monthlyChange += change;
+                monthlyChange = Math.max(0, Math.min(25, monthlyChange)); // Keep between 0-25%
+
+                const returnChange = (Math.random() - 0.5) * 50; // -25 to +25
+                monthlyReturns += returnChange;
+                monthlyReturns = Math.max(0, monthlyReturns);
+
+                // Update display
+                const changeElement = document.querySelector('.summary-card .change');
+                if (changeElement) {
+                    changeElement.textContent = `${monthlyChange >= 0 ? '+' : ''}${monthlyChange.toFixed(1)}% this month`;
+                    changeElement.className = `change ${monthlyChange >= 0 ? 'positive' : 'negative'}`;
+                }
+
+                const returnsElement = document.querySelector('.summary-card:nth-child(3) .value');
+                if (returnsElement) {
+                    returnsElement.textContent = `EUR ${monthlyReturns.toLocaleString()}`;
+                }
+            }
+
+            function updateInvestments() {
+                investments.forEach(investment => {
+                    // Simulate small market changes
+                    const valueChange = (Math.random() - 0.5) * 100; // -50 to +50
+                    const changePercent = (Math.random() - 0.5) * 0.5; // -0.25% to +0.25%
+
+                    investment.value += valueChange;
+                    investment.change += changePercent;
+
+                    // Keep values reasonable
+                    investment.value = Math.max(1000, investment.value);
+                    investment.change = Math.max(-20, Math.min(50, investment.change));
+
+                    // Update DOM
+                    const valueElement = document.querySelector(`#${investment.id}-value`);
+                    const changeElement = document.querySelector(`#${investment.id}-change`);
+
+                    if (valueElement) {
+                        valueElement.textContent = `EUR ${investment.value.toLocaleString()}`;
+                    }
+                    if (changeElement) {
+                        changeElement.textContent = `${investment.change >= 0 ? '+' : ''}${investment.change.toFixed(1)}%`;
+                        changeElement.className = `stat-value ${investment.change >= 0 ? 'positive' : 'negative'}`;
+                    }
+                });
+            }
+
+            // Add IDs to investment elements for dynamic updates
+            const investmentCards = document.querySelectorAll('.investment-card');
+            investmentCards.forEach((card, index) => {
+                const valueElement = card.querySelector('.stat-value:nth-child(2)');
+                const changeElement = card.querySelector('.stat-value:nth-child(3)');
+
+                if (valueElement) valueElement.id = `${investments[index].id}-value`;
+                if (changeElement) changeElement.id = `${investments[index].id}-change`;
+            });
+
+            // Update every 5 seconds
+            setInterval(() => {
+                updatePortfolioSummary();
+                updateInvestments();
+            }, 5000);
+
+            // Add entrance animations with delay
+            const cards = document.querySelectorAll('.investment-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
         });
     </script>
 </body>

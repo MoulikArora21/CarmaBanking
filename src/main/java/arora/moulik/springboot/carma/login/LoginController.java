@@ -25,12 +25,28 @@ public class LoginController {
 		this.authenticationManager = authenticationManager;
 	}
 
-	@RequestMapping(value="/login", method = RequestMethod.GET)
-	public String loginpage(ModelMap model) {
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public String loginpage(@RequestParam(value = "error", required = false) String error,
+			@RequestParam(value = "logout", required = false) String logout,
+			ModelMap model) {
+		if (error != null) {
+			if ("access_denied".equals(error)) {
+				model.put("errorMessage", "Access denied. Please log in to continue.");
+			} else if ("system_error".equals(error)) {
+				model.put("errorMessage", "A system error occurred. Please try again.");
+			} else if ("unknown_error".equals(error)) {
+				model.put("errorMessage", "An unknown error occurred. Please try again.");
+			} else {
+				model.put("errorMessage", "Login required to access this page.");
+			}
+		}
+		if (logout != null) {
+			model.put("successMessage", "You have been logged out successfully.");
+		}
 		return "login";
 	}
 
-	@RequestMapping(value="/login", method = RequestMethod.POST)
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String handleLogin(
 			@RequestParam("username") String username,
 			@RequestParam("password") String password,
@@ -39,8 +55,7 @@ public class LoginController {
 
 		try {
 			// Create authentication token
-			UsernamePasswordAuthenticationToken authToken =
-				new UsernamePasswordAuthenticationToken(username, password);
+			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
 
 			// Authenticate using Spring Security's AuthenticationManager
 			Authentication authentication = authenticationManager.authenticate(authToken);
@@ -50,9 +65,8 @@ public class LoginController {
 
 			// Store SecurityContext in session
 			session.setAttribute(
-				HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-				SecurityContextHolder.getContext()
-			);
+					HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+					SecurityContextHolder.getContext());
 
 			// Store username in model for session
 			model.put("username", username);

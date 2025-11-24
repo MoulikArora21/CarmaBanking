@@ -3,17 +3,22 @@ package arora.moulik.springboot.carma.recepientspage;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import arora.moulik.springboot.carma.dto.RecipientRequestDTO;
+import arora.moulik.springboot.carma.dto.TransactionRequestDTO;
 import arora.moulik.springboot.carma.register.User;
 import arora.moulik.springboot.carma.register.UserRepository;
 import arora.moulik.springboot.carma.transactionspage.Transaction;
 import arora.moulik.springboot.carma.transactionspage.TransactionRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -53,7 +58,16 @@ public class RecipientControllerJpa {
 
     @RequestMapping(value = "addRecipient", method = RequestMethod.POST)
     @Transactional
-    public String addRecipient(@RequestParam String recipientUsername, ModelMap model) {
+    public String addRecipient(@Valid RecipientRequestDTO recipientDTO, BindingResult result, ModelMap model) {
+        if (result.hasErrors()) {
+            List<Recipient> recipients = recRepo.findByAddedBy(getLoggedinUsername())
+                    .stream()
+                    .collect(Collectors.toList());
+            model.addAttribute("recipients", recipients);
+            model.addAttribute("username", getLoggedinUsername());
+            return "recipients";
+        }
+
         String username = getLoggedinUsername();
 
         if (username == null) {
@@ -62,13 +76,13 @@ public class RecipientControllerJpa {
         }
 
         // Normalize usernames
-        String normalizedRecipientUsername = recipientUsername.toLowerCase();
+        String normalizedRecipientUsername = recipientDTO.getRecipientUsername().toLowerCase().trim();
         String normalizedAddedBy = username.toLowerCase();
 
         // Validate: Check if recipientUsername exists in user repository
         User recipientUser = userRepo.findByUsername(normalizedRecipientUsername);
         if (recipientUser == null) {
-            model.addAttribute("error", "Failed to add recipient. Username does not exist.");
+            result.rejectValue("recipientUsername", "error.recipientUsername", "Username does not exist.");
             List<Recipient> recipients = recRepo.findByAddedBy(username)
                     .stream()
                     .collect(Collectors.toList());
@@ -79,7 +93,7 @@ public class RecipientControllerJpa {
 
         // Validate: Prevent adding self as recipient
         if (normalizedRecipientUsername.equals(normalizedAddedBy)) {
-            model.addAttribute("error", "Cannot add yourself as a recipient.");
+            result.rejectValue("recipientUsername", "error.recipientUsername", "Cannot add yourself as a recipient.");
             List<Recipient> recipients = recRepo.findByAddedBy(username)
                     .stream()
                     .collect(Collectors.toList());
@@ -93,7 +107,7 @@ public class RecipientControllerJpa {
                 .stream()
                 .anyMatch(r -> r.getUsername().equals(normalizedRecipientUsername));
         if (alreadyExists) {
-            model.addAttribute("error", "Recipient already added.");
+            result.rejectValue("recipientUsername", "error.recipientUsername", "Recipient already added.");
             List<Recipient> recipients = recRepo.findByAddedBy(username)
                     .stream()
                     .collect(Collectors.toList());
@@ -118,8 +132,8 @@ public class RecipientControllerJpa {
 
     @RequestMapping(value = "sendMoney", method = RequestMethod.POST)
     @Transactional
-    public String sendMoney(@RequestParam String recipientUsername, @RequestParam float amount, 
-                           ModelMap model) {
+    public String sendMoney(@RequestParam String recipientUsername, @RequestParam float amount,
+            ModelMap model) {
         String username = getLoggedinUsername();
 
         if (username == null) {
@@ -127,8 +141,45 @@ public class RecipientControllerJpa {
             return "login";
         }
 
+        // Create and validate TransactionRequestDTO
+        TransactionRequestDTO transactionDTO = new TransactionRequestDTO();
+        transactionDTO.setRecipientUsername(recipientUsername != null ? recipientUsername.trim() : "");
+        transactionDTO.setAmount(BigDecimal.valueOf(amount));
+        transactionDTO.setCurrency("EUR");
+
+        // Manual validation since we're using @RequestParam
+        if (transactionDTO.getRecipientUsername().isEmpty()) {
+            model.addAttribute("error", "Recipient username cannot be empty.");
+            List<Recipient> recipients = recRepo.findByAddedBy(username)
+                    .stream()
+                    .collect(Collectors.toList());
+            model.addAttribute("recipients", recipients);
+            model.addAttribute("username", username);
+            return "recipients";
+        }
+
+        if (transactionDTO.getAmount().compareTo(BigDecimal.valueOf(0.01)) < 0) {
+            model.addAttribute("error", "Amount must be greater than 0.");
+            List<Recipient> recipients = recRepo.findByAddedBy(username)
+                    .stream()
+                    .collect(Collectors.toList());
+            model.addAttribute("recipients", recipients);
+            model.addAttribute("username", username);
+            return "recipients";
+        }
+
+        if (transactionDTO.getAmount().compareTo(BigDecimal.valueOf(100000.00)) > 0) {
+            model.addAttribute("error", "Amount cannot exceed 100,000 EUR.");
+            List<Recipient> recipients = recRepo.findByAddedBy(username)
+                    .stream()
+                    .collect(Collectors.toList());
+            model.addAttribute("recipients", recipients);
+            model.addAttribute("username", username);
+            return "recipients";
+        }
+
         // Normalize usernames
-        String normalizedRecipientUsername = recipientUsername.toLowerCase();
+        String normalizedRecipientUsername = transactionDTO.getRecipientUsername().toLowerCase();
         String normalizedUsername = username.toLowerCase();
 
         // Validate recipient exists in user's recipient list
@@ -146,12 +197,12 @@ public class RecipientControllerJpa {
         }
 
         boolean success = addTransaction(
-            normalizedUsername,
-            normalizedRecipientUsername,
-            amount,
-            "EUR",
-            username + " sent " + amount + " EUR to " + recipientUsername
-        );
+                normalizedUsername,
+                normalizedRecipientUsername,
+                transactionDTO.getAmountAsFloat(),
+                transactionDTO.getCurrency(),
+                username + " sent " + transactionDTO.getAmount() + " " + transactionDTO.getCurrency() + " to "
+                        + recipientUsername);
 
         if (success) {
             model.addAttribute("message", "Money sent successfully!");
@@ -169,15 +220,15 @@ public class RecipientControllerJpa {
     }
 
     @Transactional
-    public boolean addTransaction(String senderUsername, String recipientUsername, float amount, 
-                                 String currency, String description) {
+    public boolean addTransaction(String senderUsername, String recipientUsername, float amount,
+            String currency, String description) {
         if (amount <= 0) {
             System.out.println("Invalid amount: " + amount);
             return false;
         }
         if (senderUsername == null || recipientUsername == null || currency == null) {
-            System.out.println("Invalid transaction details: sender=" + senderUsername + 
-                               ", recipient=" + recipientUsername + ", currency=" + currency);
+            System.out.println("Invalid transaction details: sender=" + senderUsername +
+                    ", recipient=" + recipientUsername + ", currency=" + currency);
             return false;
         }
 
@@ -212,42 +263,42 @@ public class RecipientControllerJpa {
 
         // Create transaction for the sender (Debit)
         Transaction senderTransaction = new Transaction(
-            null,
-            senderUsername,
-            recipientUsername,
-            "Debit",
-            amount,
-            LocalDateTime.now(),
-            description != null ? description : senderUsername + " sent " + amount + " " + currency + " to " + recipientUsername,
-            currency
-        );
+                null,
+                senderUsername,
+                recipientUsername,
+                "Debit",
+                amount,
+                LocalDateTime.now(),
+                description != null ? description
+                        : senderUsername + " sent " + amount + " " + currency + " to " + recipientUsername,
+                currency);
         trxRepo.save(senderTransaction);
-        System.out.println("Added sender transaction: ID=" + senderTransaction.getId() + 
-                           ", Sender=" + senderUsername + 
-                           ", Recipient=" + recipientUsername + 
-                           ", Type=Debit, Amount=" + amount + " " + currency);
+        System.out.println("Added sender transaction: ID=" + senderTransaction.getId() +
+                ", Sender=" + senderUsername +
+                ", Recipient=" + recipientUsername +
+                ", Type=Debit, Amount=" + amount + " " + currency);
 
         // Create transaction for the recipient (Credit)
         Transaction recipientTransaction = new Transaction(
-            null,
-            senderUsername,
-            recipientUsername,
-            "Credit",
-            amount,
-            LocalDateTime.now(),
-            description != null ? description : recipientUsername + " received " + amount + " " + currency + " from " + senderUsername,
-            currency
-        );
+                null,
+                senderUsername,
+                recipientUsername,
+                "Credit",
+                amount,
+                LocalDateTime.now(),
+                description != null ? description
+                        : recipientUsername + " received " + amount + " " + currency + " from " + senderUsername,
+                currency);
         trxRepo.save(recipientTransaction);
-        System.out.println("Added recipient transaction: ID=" + recipientTransaction.getId() + 
-                           ", Sender=" + senderUsername + 
-                           ", Recipient=" + recipientUsername + 
-                           ", Type=Credit, Amount=" + amount + " " + currency);
+        System.out.println("Added recipient transaction: ID=" + recipientTransaction.getId() +
+                ", Sender=" + senderUsername +
+                ", Recipient=" + recipientUsername +
+                ", Type=Credit, Amount=" + amount + " " + currency);
 
         return true;
     }
 
     private String getLoggedinUsername() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();	
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }

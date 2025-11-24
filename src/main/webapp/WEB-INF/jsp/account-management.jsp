@@ -68,7 +68,7 @@
         .input-group input { padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Inter', sans-serif; }
         .input-group input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
 
-        .btn-primary { padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; width: 100%; }
+        .btn-primary { padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
 
         /* Simple Sections */
@@ -80,7 +80,7 @@
         .danger-zone .section-header h3 { color: #c53030; }
         .danger-zone .section-header { background: #fff5f5; }
         .danger-zone .section-header:hover { background: #fed7d7; }
-        .btn-danger { padding: 12px 24px; background: #c53030; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; width: 100%; }
+        .btn-danger { padding: 12px 24px; background: #c53030; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-danger:hover { background: #9b2c2c; transform: translateY(-1px); }
 
         /* User Dropdown */
@@ -109,7 +109,6 @@
         @media (max-width: 768px) {
             .header-content { padding: 0 16px; }
             .user-info { display: none; }
-            .menu-toggle { display: flex; }
             .container { padding: 24px 16px; }
             .page-title { font-size: 24px; }
             .details-grid { grid-template-columns: 1fr; }
@@ -168,7 +167,7 @@
                     </div>
                 </div>
                 <div class="menu-toggle" onclick="toggleMenuSidebar()">
-                    <i class="ri-menu-3-fill"></i>
+                    <i class="ri-menu-line" style="font-size: 20px; color: #4a5568;"></i>
                 </div>
             </div>
         </div>
@@ -215,7 +214,8 @@
                         </div>
                     </div>
                     <div class="action-buttons">
-                        <button class="btn-icon">
+                        <button class="btn-icon" onclick="window.location.href='/edit-details'">
+                            <i class="ri-edit-line"></i>
                             <span>Edit Details</span>
                         </button>
                     </div>
@@ -231,18 +231,20 @@
             </div>
             <div class="section-content">
                 <div class="section-inner">
-                    <form>
+                    <form id="statementForm" method="post" action="/generate-statement">
                         <div class="date-inputs">
                             <div class="input-group">
                                 <label>Start Date</label>
-                                <input type="date" id="startDate">
+                                <input type="date" id="startDate" name="startDate" required>
                             </div>
                             <div class="input-group">
                                 <label>End Date</label>
-                                <input type="date" id="endDate">
+                                <input type="date" id="endDate" name="endDate" required>
                             </div>
                         </div>
-                        <button type="button" class="btn-primary">Generate Statement</button>
+                        <button type="submit" class="btn-primary">
+                            <i class="ri-file-pdf-line"></i> Generate Statement
+                        </button>
                     </form>
                 </div>
             </div>
@@ -265,7 +267,11 @@
             <div class="section-content">
                 <div class="section-inner">
                     <p style="margin-bottom: 16px; color: #c53030; font-size: 14px;">Warning: This action is permanent and cannot be undone. All your data will be permanently deleted.</p>
-                    <button type="button" class="btn-danger">Permanently Delete My Account</button>
+                    <form id="deleteAccountForm" method="post" action="/delete-account" onsubmit="return confirmDelete()">
+                        <button type="submit" class="btn-danger">
+                            <i class="ri-delete-bin-line"></i> Permanently Delete My Account
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -329,6 +335,10 @@
                 content.classList.add('open');
                 arrow.classList.add('open');
             }
+        }
+
+        function confirmDelete() {
+            return confirm('Are you absolutely sure you want to delete your account? This action cannot be undone and all your data will be permanently deleted.');
         }
     </script>
 </body>

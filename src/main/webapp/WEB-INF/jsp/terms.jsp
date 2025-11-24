@@ -1,18 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transactions - CARMA Banking</title>
+    <title>Terms and Conditions - CARMA Banking</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f8f9fa; color: #1a202c; }
-        .header { background: white; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        body { font-family: 'Inter', sans-serif; background: #f8f9fa; color: #1a202c; min-height: 100vh; }
+
+        /* Header */
+        .header { background: white; border-bottom: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
         .header-content { max-width: 1400px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 72px; }
         .logo-link { display: flex; align-items: center; text-decoration: none; transition: opacity 0.2s; }
         .logo-link:hover { opacity: 0.8; }
@@ -28,46 +28,13 @@
         .notification-item:hover { background: #f7fafc; }
         .notification-item:last-child { border-bottom: none; }
         .notification-text { font-size: 14px; color: #4a5568; line-height: 1.5; text-align: center; padding: 24px 0; }
-        .user-info { display: flex; align-items: center; gap: 12px; padding: 8px 16px; background: #f7fafc; border-radius: 12px; }
+        .user-info { display: flex; align-items: center; gap: 12px; padding: 8px 16px; background: #f7fafc; border-radius: 12px; cursor: pointer; }
         .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 16px; }
-        .btn-logout { padding: 10px 20px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; color: #4a5568; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; text-decoration: none; }
-        .btn-logout:hover { background: #f7fafc; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
-        .page-header { margin-bottom: 32px; }
-        .page-title { font-size: 32px; font-weight: 700; color: #2d3748; margin-bottom: 8px; }
-        .page-subtitle { color: #718096; font-size: 16px; }
-        .transactions-card { background: white; border-radius: 16px; padding: 32px; border: 1px solid #e2e8f0; }
-        .filter-bar { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
-        .filter-btn { padding: 10px 20px; border-radius: 8px; border: 1px solid #e2e8f0; background: white; color: #4a5568; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-        .filter-btn.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-color: transparent; }
-        .transaction-list { display: flex; flex-direction: column; gap: 12px; }
-        .transaction-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: #f7fafc; border-radius: 12px; transition: all 0.2s; }
-        .transaction-item:hover { background: #edf2f7; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .transaction-info { display: flex; align-items: center; gap: 16px; }
-        .transaction-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; }
-        .icon-received { background: #c6f6d5; color: #22543d; }
-        .icon-sent { background: #fed7d7; color: #742a2a; }
-        .transaction-details h4 { font-size: 16px; font-weight: 600; color: #2d3748; margin-bottom: 4px; }
-        .transaction-details p { font-size: 14px; color: #718096; }
-        .transaction-amount { text-align: right; }
-        .amount { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-        .amount.positive { color: #38a169; }
-        .amount.negative { color: #e53e3e; }
-        .transaction-date { font-size: 13px; color: #a0aec0; }
-        .empty-state { text-align: center; padding: 64px 24px; color: #a0aec0; }
-        .empty-state h3 { font-size: 20px; color: #4a5568; margin-bottom: 8px; }
-        @media (max-width: 768px) { .header-content { padding: 0 16px; } .user-info { display: none; } .container { padding: 24px 16px; } .page-title { font-size: 24px; } }
-
-        /* User Dropdown */
         .user-container { position: relative; }
-        .user-info { cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #f7fafc; border-radius: 12px; transition: background 0.2s; }
-        .user-info:hover { background: #edf2f7; }
         .user-dropdown { position: absolute; top: 100%; right: 0; background: white; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); border: 1px solid #e2e8f0; display: none; min-width: 180px; z-index: 1000; }
         .user-dropdown.open { display: block; }
         .dropdown-item { display: block; padding: 12px 16px; color: #4a5568; text-decoration: none; transition: background 0.2s; }
         .dropdown-item:hover { background: #f7fafc; }
-
-        /* Menu Toggle */
         .menu-toggle { display: none; cursor: pointer; width: 40px; height: 40px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .menu-toggle:hover { background: #edf2f7; border-color: #667eea; }
 
@@ -80,6 +47,35 @@
         .menu-sidebar-content { padding: 16px 0; }
         .menu-item { display: block; padding: 12px 24px; color: #4a5568; text-decoration: none; transition: background 0.2s; }
         .menu-item:hover { background: #f7fafc; }
+        .user-info { display: flex; align-items: center; gap: 12px; padding: 8px 16px; background: #f7fafc; border-radius: 12px; cursor: pointer; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 16px; }
+        .user-container { position: relative; }
+        .user-dropdown { position: absolute; top: 100%; right: 0; background: white; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); border: 1px solid #e2e8f0; display: none; min-width: 180px; z-index: 1000; }
+        .user-dropdown.open { display: block; }
+        .dropdown-item { display: block; padding: 12px 16px; color: #4a5568; text-decoration: none; transition: background 0.2s; }
+        .dropdown-item:hover { background: #f7fafc; }
+
+        /* Container */
+        .container { max-width: 900px; margin: 0 auto; padding: 32px 24px; }
+        .page-header { text-align: center; margin-bottom: 32px; }
+        .page-title { font-size: 32px; font-weight: 700; color: #2d3748; margin-bottom: 8px; }
+        .page-subtitle { color: #718096; font-size: 16px; }
+
+        /* Content */
+        .content-card { background: white; border-radius: 16px; padding: 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; line-height: 1.8; }
+        .content-card h2 { font-size: 24px; font-weight: 600; color: #2d3748; margin: 32px 0 16px; }
+        .content-card h2:first-child { margin-top: 0; }
+        .content-card p { color: #4a5568; margin-bottom: 16px; }
+        .content-card ul { margin-left: 24px; margin-bottom: 16px; }
+        .content-card li { color: #4a5568; margin-bottom: 8px; }
+        .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: all 0.2s; margin-top: 24px; }
+        .back-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
+
+        @media (max-width: 768px) {
+            .container { padding: 24px 16px; }
+            .content-card { padding: 24px; }
+            .user-info { display: none; }
+        }
     </style>
 </head>
 <body>
@@ -138,60 +134,64 @@
             </div>
         </div>
     </header>
+
     <div class="container">
         <div class="page-header">
-            <h1 class="page-title">Transaction History</h1>
-            <p class="page-subtitle">View all your account transactions</p>
+            <h1 class="page-title">Terms and Conditions</h1>
+            <p class="page-subtitle">Last updated: November 25, 2025</p>
         </div>
-        <div class="transactions-card">
-            <div class="filter-bar">
-                <button class="filter-btn active">All</button>
-                <button class="filter-btn">Received</button>
-                <button class="filter-btn">Sent</button>
-            </div>
-            <c:choose>
-                <c:when test="${not empty transactionsinjsp}">
-                    <div class="transaction-list">
-                        <c:forEach var="transaction" items="${transactionsinjsp}">
-                            <div class="transaction-item">
-                                <div class="transaction-info">
-                                    <div class="transaction-icon ${transaction.type == 'Credit' ? 'icon-received' : 'icon-sent'}">
-                                        <c:choose>
-                                            <c:when test="${transaction.type == 'Credit'}">+</c:when>
-                                            <c:otherwise>-</c:otherwise>
-                                        </c:choose>
-                                    </div>
-                                    <div class="transaction-details">
-                                        <h4>${transaction.type == 'Credit' ? 'Received' : 'Sent'}</h4>
-                                        <p>
-                                            <c:choose>
-                                                <c:when test="${transaction.type == 'Credit'}">From ${transaction.senderUsername}</c:when>
-                                                <c:otherwise>To ${transaction.recipientUsername}</c:otherwise>
-                                            </c:choose>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="transaction-amount">
-                                    <div class="amount ${transaction.type == 'Credit' ? 'positive' : 'negative'}">
-                                        <c:choose>
-                                            <c:when test="${transaction.type == 'Credit'}">+</c:when>
-                                            <c:otherwise>-</c:otherwise>
-                                        </c:choose>
-                                        EUR ${transaction.amount}
-                                    </div>
-                                    <div class="transaction-date">${transaction.date.toLocalDate()}</div>
-                                </div>
-                            </div>
-                        </c:forEach>
-                    </div>
-                </c:when>
-                <c:otherwise>
-                    <div class="empty-state">
-                        <h3>No transactions yet</h3>
-                        <p>Your transaction history will appear here</p>
-                    </div>
-                </c:otherwise>
-            </c:choose>
+
+        <div class="content-card">
+            <h2>1. Introduction</h2>
+            <p>Welcome to CARMA Banking. These Terms and Conditions govern your use of our banking services. By opening an account or using our services, you agree to be bound by these terms.</p>
+
+            <h2>2. Account Ownership</h2>
+            <p>You must be at least 18 years old to open an account. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account.</p>
+
+            <h2>3. Services</h2>
+            <p>CARMA Banking provides the following services:</p>
+            <ul>
+                <li>Online banking and account management</li>
+                <li>Domestic and international money transfers</li>
+                <li>Investment services and portfolio management</li>
+                <li>Debit and credit card services</li>
+                <li>24/7 customer support</li>
+            </ul>
+
+            <h2>4. Fees and Charges</h2>
+            <p>Account maintenance, transaction fees, and other charges may apply to your account. A complete fee schedule is available upon request and will be provided when you open your account.</p>
+
+            <h2>5. Security</h2>
+            <p>You must:</p>
+            <ul>
+                <li>Keep your password and security information confidential</li>
+                <li>Notify us immediately of any unauthorized transactions</li>
+                <li>Use secure internet connections when accessing your account</li>
+                <li>Not share your account access with others</li>
+            </ul>
+
+            <h2>6. Transactions</h2>
+            <p>All transactions are subject to verification and may be delayed or declined for security purposes. Transfer limits apply to protect against fraud.</p>
+
+            <h2>7. Data Privacy</h2>
+            <p>We collect and process your personal data in accordance with applicable data protection laws. Your information is used solely for providing banking services and will not be shared with third parties without your consent, except as required by law.</p>
+
+            <h2>8. Liability</h2>
+            <p>CARMA Banking is not liable for losses resulting from unauthorized access to your account if you have failed to maintain adequate security measures. We are committed to protecting your account but require your cooperation.</p>
+
+            <h2>9. Account Closure</h2>
+            <p>You may close your account at any time. We reserve the right to close accounts that violate these terms or applicable laws. Upon closure, any remaining balance will be returned to you.</p>
+
+            <h2>10. Changes to Terms</h2>
+            <p>We reserve the right to modify these terms at any time. You will be notified of significant changes via email or through your online banking portal.</p>
+
+            <h2>11. Contact Information</h2>
+            <p>For questions or concerns about these Terms and Conditions, please contact our customer support team through the Support Chat feature or email us at support@carmabanking.com.</p>
+
+            <a href="/account-management" class="back-btn">
+                <i class="ri-arrow-left-line"></i>
+                Back to Account Management
+            </a>
         </div>
     </div>
 
@@ -199,7 +199,7 @@
     <div class="menu-sidebar" id="menuSidebar">
         <div class="menu-sidebar-header">
             <h3>Menu</h3>
-            <button class="close-btn" onclick="toggleMenuSidebar()">&times;</button>
+            <button onclick="toggleMenuSidebar()" class="close-btn">&times;</button>
         </div>
         <div class="menu-sidebar-content">
             <a href="/cards" class="menu-item">My Cards</a>
@@ -210,65 +210,32 @@
 
     <script>
         function toggleNotifications() {
-            const dropdown = document.getElementById('notificationDropdown');
-            dropdown.classList.toggle('open');
+            document.getElementById('notificationDropdown').classList.toggle('open');
         }
-
+        
         function toggleUserDropdown() {
-            const dropdown = document.getElementById('userDropdown');
-            dropdown.classList.toggle('open');
+            document.getElementById('userDropdown').classList.toggle('open');
         }
-
+        
         function toggleMenuSidebar() {
-            const sidebar = document.getElementById('menuSidebar');
-            sidebar.classList.toggle('open');
+            document.getElementById('menuSidebar').classList.toggle('open');
         }
-
-        // Close dropdowns when clicking outside
+        
         document.addEventListener('click', function(event) {
-            const container = document.querySelector('.notification-container');
-            if (container && !container.contains(event.target)) {
+            const notificationContainer = document.querySelector('.notification-container');
+            const userContainer = document.querySelector('.user-container');
+            const menuToggle = document.querySelector('.menu-toggle');
+            const menuSidebar = document.querySelector('.menu-sidebar');
+
+            if (!notificationContainer.contains(event.target)) {
                 document.getElementById('notificationDropdown').classList.remove('open');
             }
-            const userContainer = document.querySelector('.user-container');
-            if (userContainer && !userContainer.contains(event.target)) {
+            if (!userContainer.contains(event.target)) {
                 document.getElementById('userDropdown').classList.remove('open');
             }
-            const sidebar = document.getElementById('menuSidebar');
-            if (sidebar && !sidebar.contains(event.target) && !event.target.closest('.menu-toggle')) {
-                sidebar.classList.remove('open');
+            if (!menuToggle.contains(event.target) && !menuSidebar.contains(event.target)) {
+                document.getElementById('menuSidebar').classList.remove('open');
             }
-        });
-
-        // Transaction filtering functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const filterButtons = document.querySelectorAll('.filter-btn');
-            const transactionItems = document.querySelectorAll('.transaction-item');
-
-            filterButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Remove active class from all buttons
-                    filterButtons.forEach(btn => btn.classList.remove('active'));
-                    // Add active class to clicked button
-                    this.classList.add('active');
-
-                    const filterType = this.textContent.toLowerCase();
-
-                    transactionItems.forEach(item => {
-                        const transactionType = item.querySelector('.transaction-details h4').textContent.toLowerCase();
-
-                        if (filterType === 'all') {
-                            item.style.display = 'flex';
-                        } else if (filterType === 'received' && transactionType === 'received') {
-                            item.style.display = 'flex';
-                        } else if (filterType === 'sent' && transactionType === 'sent') {
-                            item.style.display = 'flex';
-                        } else {
-                            item.style.display = 'none';
-                        }
-                    });
-                });
-            });
         });
     </script>
 </body>

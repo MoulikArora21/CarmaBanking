@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import arora.moulik.springboot.carma.dto.UserRegistrationDTO;
 import jakarta.validation.Valid;
 
 @Controller
@@ -20,70 +21,69 @@ public class RegisterationControllerJpa {
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
 
-    public RegisterationControllerJpa( PasswordEncoder passwordEncoder,
-                                     UserRepository userRepo) {
+    public RegisterationControllerJpa(PasswordEncoder passwordEncoder,
+            UserRepository userRepo) {
         this.passwordEncoder = passwordEncoder;
         this.userRepo = userRepo;
     }
 
     @RequestMapping(value = "registration", method = RequestMethod.GET)
     public String startRegistration(ModelMap model) {
-        User user = new User(null, "", "", "", "", "", "", "", "", "", "", 0, "");
-        model.put("user", user);
+        UserRegistrationDTO userDTO = new UserRegistrationDTO();
+        model.put("user", userDTO);
         return "registration";
     }
 
     @RequestMapping(value = "registration", method = RequestMethod.POST)
-    public String saveUser(ModelMap model, @Valid User user, BindingResult result) {
+    public String saveUser(ModelMap model, @Valid UserRegistrationDTO userDTO, BindingResult result) {
         if (result.hasErrors()) {
             return "registration";
         }
 
-        // Check if username already exists
-        if (userRepo.findByUsername(user.getUsername()) != null) {
-            result.rejectValue("username", "error.user", "Username already exists!");
+        // Custom validation for password confirmation
+        if (!userDTO.isPasswordConfirmed()) {
+            result.rejectValue("confirmPassword", "error.confirmPassword", "Passwords do not match!");
             return "registration";
         }
 
-        // Check if passwords match
-        if (!user.getPassword().equals(user.getConfirm_password())) {
-            result.rejectValue("confirm_password", "error.confirm_password", "Passwords do not match!");
+        // Check if username already exists
+        if (userRepo.findByUsername(userDTO.getUsername().toLowerCase()) != null) {
+            result.rejectValue("username", "error.user", "Username already exists!");
             return "registration";
         }
 
         try {
             // Generate a unique account number
             String uniqueAccount = generateUniqueAccountNumber();
-            String encodedPassword = passwordEncoder.encode(user.getPassword());
+            String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
 
             // Create and save the user
             User newUser = new User(
-                null, // Let JPA generate the ID
-                user.getName(),
-                user.getSurname(),
-                user.getCountry(),
-                user.getAddress(),
-                user.getPhone_number(),
-                user.getEmail(),
-                user.getUsername(),
-                user.getPersonalid(),
-                encodedPassword,
-                null, // Clear confirm_password
-                generateRandomBal(),
-                uniqueAccount
-            );
+                    null, // Let JPA generate the ID
+                    userDTO.getName(),
+                    userDTO.getSurname(),
+                    userDTO.getCountry(),
+                    userDTO.getAddress(),
+                    userDTO.getPhoneNumber(),
+                    userDTO.getEmail(),
+                    userDTO.getUsername().toLowerCase(), // Normalize username
+                    userDTO.getPersonalId(),
+                    encodedPassword,
+                    null, // Clear confirm_password
+                    generateRandomBal(),
+                    uniqueAccount);
             userRepo.save(newUser);
 
-
-            model.put("username", user.getUsername());
-            model.put("email", user.getEmail());
-            model.put("phoneNumber", user.getPhone_number());
+            model.put("username", userDTO.getUsername().toLowerCase());
+            model.put("email", userDTO.getEmail());
+            model.put("phoneNumber", userDTO.getPhoneNumber());
             return "redirect:otpverify";
 
         } catch (DataIntegrityViolationException e) {
             // Check if the exception is due to duplicate account or username
             if (e.getMessage().contains("ACCOUNT")) {
-                result.rejectValue("account", "error.account", "Failed to generate a unique account number. Please try again.");
+                result.rejectValue("account", "error.account",
+                        "Failed to generate a unique account number. Please try again.");
             } else {
                 result.rejectValue("username", "error.user", "Username already exists!");
             }
