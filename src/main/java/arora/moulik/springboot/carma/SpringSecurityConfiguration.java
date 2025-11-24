@@ -23,30 +23,27 @@ public class SpringSecurityConfiguration {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
-            .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/error", "/WEB-INF/jsp/**");
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/error", "/WEB-INF/jsp/**");
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/login", "/registration", "/otpverify", "/otpresend").permitAll()
-                .anyRequest().authenticated()
-            )
-            .logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout=true")
-                .permitAll()
-            )
-            .csrf(csrf -> csrf.disable())
-            .headers(headers -> headers.disable())
-            .servletApi(servletApi -> servletApi.disable())
-            .anonymous(anonymous -> anonymous.disable())
-            .requestCache(cache -> cache.disable()); 
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/", "/login", "/registration", "/otpverify", "/otpresend").permitAll()
+                        .anyRequest().authenticated())
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout=true")
+                        .permitAll())
+                .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers.disable())
+                .servletApi(servletApi -> servletApi.disable())
+                .anonymous(anonymous -> anonymous.disable())
+                .requestCache(cache -> cache.disable());
 
         return http.build();
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
