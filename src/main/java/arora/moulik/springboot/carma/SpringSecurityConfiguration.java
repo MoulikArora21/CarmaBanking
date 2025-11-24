@@ -22,7 +22,6 @@ public class SpringSecurityConfiguration {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        // Completely bypass Spring Security filters for static resources and JSP pages
         return (web) -> web.ignoring()
             .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/error", "/WEB-INF/jsp/**");
     }
@@ -31,9 +30,7 @@ public class SpringSecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                // Public pages - no authentication required
                 .requestMatchers("/", "/login", "/registration", "/otpverify", "/otpresend").permitAll()
-                // All other pages require authentication
                 .anyRequest().authenticated()
             )
             .logout(logout -> logout
@@ -43,9 +40,9 @@ public class SpringSecurityConfiguration {
             )
             .csrf(csrf -> csrf.disable())
             .headers(headers -> headers.disable())
-            .servletApi(servletApi -> servletApi.disable())  // Disable servlet API integration
-            .anonymous(anonymous -> anonymous.disable())  // Disable anonymous authentication
-            .requestCache(cache -> cache.disable());  // Disable request cache
+            .servletApi(servletApi -> servletApi.disable())
+            .anonymous(anonymous -> anonymous.disable())
+            .requestCache(cache -> cache.disable()); 
 
         return http.build();
     }

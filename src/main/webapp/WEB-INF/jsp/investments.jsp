@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Investments - CARMA Banking</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #f8f9fa; color: #1a202c; }
@@ -66,6 +67,29 @@
         .btn-secondary { background: white; color: #667eea; border: 1px solid #e2e8f0; }
         .btn-secondary:hover { background: #f7fafc; }
         @media (max-width: 768px) { .header-content { padding: 0 16px; } .user-info { display: none; } .container { padding: 24px 16px; } .page-title { font-size: 24px; } .investments-grid { grid-template-columns: 1fr; } .action-buttons { flex-direction: column; } .action-btn { width: 100%; } }
+
+        /* User Dropdown */
+        .user-container { position: relative; }
+        .user-info { cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #f7fafc; border-radius: 12px; transition: background 0.2s; }
+        .user-info:hover { background: #edf2f7; }
+        .user-dropdown { position: absolute; top: 100%; right: 0; background: white; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); border: 1px solid #e2e8f0; display: none; min-width: 180px; z-index: 1000; }
+        .user-dropdown.open { display: block; }
+        .dropdown-item { display: block; padding: 12px 16px; color: #4a5568; text-decoration: none; transition: background 0.2s; }
+        .dropdown-item:hover { background: #f7fafc; }
+
+        /* Menu Toggle */
+        .menu-toggle { display: none; cursor: pointer; width: 40px; height: 40px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .menu-toggle:hover { background: #edf2f7; border-color: #667eea; }
+
+        /* Menu Sidebar */
+        .menu-sidebar { position: fixed; top: 0; right: -300px; width: 300px; height: 100vh; background: white; box-shadow: -4px 0 16px rgba(0,0,0,0.12); transition: right 0.3s; z-index: 1001; }
+        .menu-sidebar.open { right: 0; }
+        .menu-sidebar-header { padding: 16px 24px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+        .menu-sidebar-header h3 { margin: 0; font-size: 18px; font-weight: 600; color: #2d3748; }
+        .close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #4a5568; }
+        .menu-sidebar-content { padding: 16px 0; }
+        .menu-item { display: block; padding: 12px 24px; color: #4a5568; text-decoration: none; transition: background 0.2s; }
+        .menu-item:hover { background: #f7fafc; }
     </style>
 </head>
 <body>
@@ -96,9 +120,7 @@
             <div class="header-actions">
                 <div class="notification-container">
                     <div class="notification-bell" onclick="toggleNotifications()">
-                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M6.31317 12.463C6.20006 9.29213 8.60976 6.6252 11.701 6.5C14.7923 6.6252 17.202 9.29213 17.0889 12.463C17.0889 13.78 18.4841 15.063 18.525 16.383C18.525 16.4017 18.525 16.4203 18.525 16.439C18.5552 17.2847 17.9124 17.9959 17.0879 18.029H13.9757C13.9786 18.677 13.7404 19.3018 13.3098 19.776C12.8957 20.2372 12.3123 20.4996 11.701 20.4996C11.0897 20.4996 10.5064 20.2372 10.0923 19.776C9.66161 19.3018 9.42346 18.677 9.42635 18.029H6.31317C5.48869 17.9959 4.84583 17.2847 4.87602 16.439C4.87602 16.4203 4.87602 16.4017 4.87602 16.383C4.91795 15.067 6.31317 13.781 6.31317 12.463Z" stroke="#4a5568" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
+                        <i class="ri-notification-line"></i>
                     </div>
                     <div class="notification-dropdown" id="notificationDropdown">
                         <div class="notification-header">Notifications</div>
@@ -109,11 +131,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="user-info">
-                    <div class="user-avatar">${username.substring(0,1).toUpperCase()}</div>
-                    <span>${username}</span>
+                <div class="user-container">
+                    <div class="user-info" onclick="toggleUserDropdown()">
+                        <div class="user-avatar">${username.substring(0,1).toUpperCase()}</div>
+                        <span class="user-name">${username}</span>
+                        <i class="ri-arrow-down-s-line"></i>
+                    </div>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="/account-management" class="dropdown-item">Account Management</a>
+                        <a href="/logout" class="dropdown-item">Logout</a>
+                    </div>
                 </div>
-                <a href="/logout" class="btn-logout">Logout</a>
+                <div class="menu-toggle" onclick="toggleMenuSidebar()">
+                    <i class="ri-menu-line" style="font-size: 20px; color: #4a5568;"></i>
+                </div>
             </div>
         </div>
     </header>
@@ -248,17 +279,49 @@
             <button class="action-btn btn-secondary" onclick="window.location.href='/homepage'">Back to Dashboard</button>
         </div>
     </div>
+
+    <!-- Menu Sidebar -->
+    <div class="menu-sidebar" id="menuSidebar">
+        <div class="menu-sidebar-header">
+            <h3>Menu</h3>
+            <button class="close-btn" onclick="toggleMenuSidebar()">&times;</button>
+        </div>
+        <div class="menu-sidebar-content">
+            <a href="/cards" class="menu-item">My Cards</a>
+            <a href="/investments" class="menu-item">Investments</a>
+            <a href="/chat-support" class="menu-item">Support Chat</a>
+        </div>
+    </div>
+
     <script>
         function toggleNotifications() {
             const dropdown = document.getElementById('notificationDropdown');
             dropdown.classList.toggle('open');
         }
 
-        // Close notification dropdown when clicking outside
+        function toggleUserDropdown() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('open');
+        }
+
+        function toggleMenuSidebar() {
+            const sidebar = document.getElementById('menuSidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // Close dropdowns when clicking outside
         document.addEventListener('click', function(event) {
             const container = document.querySelector('.notification-container');
-            if (!container.contains(event.target)) {
+            if (container && !container.contains(event.target)) {
                 document.getElementById('notificationDropdown').classList.remove('open');
+            }
+            const userContainer = document.querySelector('.user-container');
+            if (userContainer && !userContainer.contains(event.target)) {
+                document.getElementById('userDropdown').classList.remove('open');
+            }
+            const sidebar = document.getElementById('menuSidebar');
+            if (sidebar && !sidebar.contains(event.target) && !event.target.closest('.menu-toggle')) {
+                sidebar.classList.remove('open');
             }
         });
     </script>
