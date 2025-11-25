@@ -24,7 +24,8 @@ public class AccountManagementController {
     private RecipientRepository recipientRepo;
     private PasswordResetTokenRepository tokenRepo;
 
-    public AccountManagementController(UserRepository userRepo, PasswordEncoder passwordEncoder, RecipientRepository recipientRepo, PasswordResetTokenRepository tokenRepo) {
+    public AccountManagementController(UserRepository userRepo, PasswordEncoder passwordEncoder,
+            RecipientRepository recipientRepo, PasswordResetTokenRepository tokenRepo) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.recipientRepo = recipientRepo;
@@ -100,10 +101,10 @@ public class AccountManagementController {
         if (user != null) {
             // Delete password reset tokens for this user
             tokenRepo.deleteByUser(user);
-            
+
             // Delete this user from all other users' recipient lists
             recipientRepo.deleteByUsername(username);
-            
+
             // Delete the user account
             userRepo.delete(user);
         }

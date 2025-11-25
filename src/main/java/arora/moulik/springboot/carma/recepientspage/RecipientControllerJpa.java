@@ -53,12 +53,12 @@ public class RecipientControllerJpa {
                 .collect(Collectors.toList());
         model.addAttribute("recipients", recipients);
         model.addAttribute("username", username);
-        
+
         // Add empty DTO for the form
         if (!model.containsAttribute("recipientRequestDTO")) {
             model.addAttribute("recipientRequestDTO", new RecipientRequestDTO());
         }
-        
+
         return "recipients";
     }
 
