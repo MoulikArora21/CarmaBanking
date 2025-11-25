@@ -246,9 +246,9 @@
                     </div>
                     <div class="input-container phone-container">
                         <span class="phone-prefix" id="phone-prefix"></span>
-                        <form:input path="phone_number" cssClass="phone-input" placeholder="Phone number" autocomplete="off"/>
+                        <form:input path="phoneNumber" cssClass="phone-input" placeholder="Phone number" autocomplete="off"/>
                         <span class="mandatory-mark">*</span>
-                        <form:errors path="phone_number" cssClass="error"/>
+                        <form:errors path="phoneNumber" cssClass="error"/>
                     </div>
                     <div class="input-container">
                         <form:input path="username" cssClass="username-input" placeholder="Username" autocomplete="off"/>
@@ -277,13 +277,13 @@
                         <form:errors path="email" cssClass="error"/>
                     </div>
                     <div class="input-container">
-                        <form:input path="personalid" cssClass="id-input" placeholder="Personal ID (optional)" autocomplete="off"/>
-                        <form:errors path="personalid" cssClass="error"/>
+                        <form:input path="personalId" cssClass="id-input" placeholder="Personal ID (optional)" autocomplete="off"/>
+                        <form:errors path="personalId" cssClass="error"/>
                     </div>
                     <div class="input-container">
-                        <form:password path="confirm_password" cssClass="confirm-input" placeholder="Confirm password" autocomplete="off"/>
+                        <form:password path="confirmPassword" cssClass="confirm-input" placeholder="Confirm password" autocomplete="off"/>
                         <span class="mandatory-mark">*</span>
-                        <form:errors path="confirm_password" cssClass="error"/>
+                        <form:errors path="confirmPassword" cssClass="error"/>
                     </div>
                 </div>
             </div>

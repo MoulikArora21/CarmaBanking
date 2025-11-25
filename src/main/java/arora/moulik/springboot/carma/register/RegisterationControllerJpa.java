@@ -2,9 +2,8 @@ package arora.moulik.springboot.carma.register;
 
 import java.security.SecureRandom;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -29,6 +28,13 @@ public class RegisterationControllerJpa {
 
     @RequestMapping(value = "registration", method = RequestMethod.GET)
     public String startRegistration(ModelMap model) {
+        // If user is already authenticated, redirect to homepage
+        if (SecurityContextHolder.getContext().getAuthentication() != null &&
+            SecurityContextHolder.getContext().getAuthentication().isAuthenticated() &&
+            !SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")) {
+            return "redirect:/homepage";
+        }
+
         UserRegistrationDTO userDTO = new UserRegistrationDTO();
         model.put("user", userDTO);
         return "registration";
