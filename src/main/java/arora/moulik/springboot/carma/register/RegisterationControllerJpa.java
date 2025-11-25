@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -41,7 +42,8 @@ public class RegisterationControllerJpa {
     }
 
     @RequestMapping(value = "registration", method = RequestMethod.POST)
-    public String saveUser(ModelMap model, @Valid UserRegistrationDTO userDTO, BindingResult result) {
+    public String saveUser(ModelMap model, @Valid @ModelAttribute("user") UserRegistrationDTO userDTO,
+            BindingResult result) {
         if (result.hasErrors()) {
             return "registration";
         }

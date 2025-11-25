@@ -187,25 +187,18 @@
             font-size: 13px;
             color: #718096;
             margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            padding-left: 0;
+            list-style-position: inside;
         }
 
         .requirements li.valid {
             color: #38a169;
+            list-style-type: disc;
         }
 
-        .requirements li.valid::before {
-            content: "✓";
-            color: #38a169;
-            font-weight: bold;
-        }
-
-        .requirements li.invalid::before {
-            content: "✗";
-            color: #e53e3e;
-            font-weight: bold;
+        .requirements li.invalid {
+            color: #cbd5e0;
+            list-style-type: circle;
         }
 
         .back-link {

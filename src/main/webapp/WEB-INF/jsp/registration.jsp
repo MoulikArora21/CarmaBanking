@@ -138,9 +138,15 @@
 
         .error {
             color: #e53e3e;
-            font-size: 12px;
-            margin-top: 6px;
+            font-size: 11px;
+            margin-top: 4px;
             display: block;
+            text-align: left;
+            line-height: 1.4;
+            padding: 6px 8px;
+            background: #fff5f5;
+            border-left: 3px solid #e53e3e;
+            border-radius: 4px;
         }
 
         .mandatory-note {
@@ -193,8 +199,35 @@
             }
 
             .container {
-                padding: 24px;
+                padding: 24px 16px;
                 max-width: 100%;
+                margin: 16px;
+            }
+
+            .logo-container {
+                margin-bottom: 24px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+            }
+
+            input {
+                font-size: 15px;
+                padding: 12px 16px;
+            }
+
+            .phone-input {
+                padding-left: 55px !important;
+            }
+
+            .error {
+                font-size: 10px;
+                padding: 4px 6px;
             }
         }
     </style>
@@ -230,61 +263,57 @@
         <p class="subtitle">Join CARMA Banking for secure and convenient banking</p>
         <form:form method="post" action="/registration" modelAttribute="user" cssClass="form">
             <div class="columns">
-                <div class="col-1">
-                    <div class="input-container">
-                        <form:input path="name" cssClass="name-input" placeholder="Name" autocomplete="off"/>
-                        <span class="mandatory-mark">*</span>
-                        <form:errors path="name" cssClass="error"/>
-                    </div>
-                    <div class="input-container">
-                        <form:input path="country" cssClass="country-input" placeholder="Country" list="country-list" autocomplete="off"/>
-                        <span class="mandatory-mark">*</span>
-                        <form:errors path="country" cssClass="error"/>
-                        <datalist id="country-list">
-                            <option value="Latvia">
-                        </datalist>
-                    </div>
-                    <div class="input-container phone-container">
-                        <span class="phone-prefix" id="phone-prefix"></span>
-                        <form:input path="phoneNumber" cssClass="phone-input" placeholder="Phone number" autocomplete="off"/>
-                        <span class="mandatory-mark">*</span>
-                        <form:errors path="phoneNumber" cssClass="error"/>
-                    </div>
-                    <div class="input-container">
-                        <form:input path="username" cssClass="username-input" placeholder="Username" autocomplete="off"/>
-                        <span class="mandatory-mark">*</span>
-                        <form:errors path="username" cssClass="error"/>
-                    </div>
-                    <div class="input-container">
-                        <form:password path="password" cssClass="password-input" placeholder="Password" autocomplete="off"/>
-                        <span class="mandatory-mark">*</span>
-                        <form:errors path="password" cssClass="error"/>
-                    </div>
+                <div class="input-container">
+                    <form:input path="name" cssClass="name-input" placeholder="Name" autocomplete="off"/>
+                    <span class="mandatory-mark">*</span>
+                    <form:errors path="name" cssClass="error"/>
                 </div>
-                <div class="col-2">
-                    <div class="input-container">
-                        <form:input path="surname" cssClass="surname-input" placeholder="Surname" autocomplete="off"/>
-                        <span class="mandatory-mark">*</span>
-                        <form:errors path="surname" cssClass="error"/>
-                    </div>
-                    <div class="input-container">
-                        <form:input path="address" cssClass="address-input" placeholder="Address (optional)" autocomplete="off"/>
-                        <form:errors path="address" cssClass="error"/>
-                    </div>
-                    <div class="input-container">
-                        <form:input path="email" cssClass="email-input" placeholder="Email" autocomplete="off"/>
-                        <span class="mandatory-mark">*</span>
-                        <form:errors path="email" cssClass="error"/>
-                    </div>
-                    <div class="input-container">
-                        <form:input path="personalId" cssClass="id-input" placeholder="Personal ID (optional)" autocomplete="off"/>
-                        <form:errors path="personalId" cssClass="error"/>
-                    </div>
-                    <div class="input-container">
-                        <form:password path="confirmPassword" cssClass="confirm-input" placeholder="Confirm password" autocomplete="off"/>
-                        <span class="mandatory-mark">*</span>
-                        <form:errors path="confirmPassword" cssClass="error"/>
-                    </div>
+                <div class="input-container">
+                    <form:input path="surname" cssClass="surname-input" placeholder="Surname" autocomplete="off"/>
+                    <span class="mandatory-mark">*</span>
+                    <form:errors path="surname" cssClass="error"/>
+                </div>
+                <div class="input-container">
+                    <form:input path="country" cssClass="country-input" placeholder="Country" list="country-list" autocomplete="off"/>
+                    <span class="mandatory-mark">*</span>
+                    <form:errors path="country" cssClass="error"/>
+                    <datalist id="country-list">
+                        <option value="Latvia">
+                    </datalist>
+                </div>
+                <div class="input-container">
+                    <form:input path="address" cssClass="address-input" placeholder="Address (optional)" autocomplete="off"/>
+                    <form:errors path="address" cssClass="error"/>
+                </div>
+                <div class="input-container phone-container">
+                    <span class="phone-prefix" id="phone-prefix"></span>
+                    <form:input path="phoneNumber" cssClass="phone-input" placeholder="Phone number" autocomplete="off"/>
+                    <span class="mandatory-mark">*</span>
+                    <form:errors path="phoneNumber" cssClass="error"/>
+                </div>
+                <div class="input-container">
+                    <form:input path="email" cssClass="email-input" placeholder="Email" autocomplete="off"/>
+                    <span class="mandatory-mark">*</span>
+                    <form:errors path="email" cssClass="error"/>
+                </div>
+                <div class="input-container">
+                    <form:input path="username" cssClass="username-input" placeholder="Username" autocomplete="off"/>
+                    <span class="mandatory-mark">*</span>
+                    <form:errors path="username" cssClass="error"/>
+                </div>
+                <div class="input-container">
+                    <form:input path="personalId" cssClass="id-input" placeholder="Personal ID (optional)" autocomplete="off"/>
+                    <form:errors path="personalId" cssClass="error"/>
+                </div>
+                <div class="input-container">
+                    <form:password path="password" cssClass="password-input" placeholder="Password" autocomplete="off"/>
+                    <span class="mandatory-mark">*</span>
+                    <form:errors path="password" cssClass="error"/>
+                </div>
+                <div class="input-container">
+                    <form:password path="confirmPassword" cssClass="confirm-input" placeholder="Confirm password" autocomplete="off"/>
+                    <span class="mandatory-mark">*</span>
+                    <form:errors path="confirmPassword" cssClass="error"/>
                 </div>
             </div>
             <p class="mandatory-note">* Mandatory fields</p>

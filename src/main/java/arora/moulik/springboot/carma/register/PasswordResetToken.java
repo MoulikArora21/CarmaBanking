@@ -23,6 +23,8 @@ public class PasswordResetToken {
 
     private LocalDateTime expiryDate;
 
+    private boolean used = false; // Track if token has been used
+
     public PasswordResetToken() {
     }
 
@@ -30,6 +32,7 @@ public class PasswordResetToken {
         this.token = token;
         this.user = user;
         this.expiryDate = LocalDateTime.now().plusHours(24); // Token valid for 24 hours
+        this.used = false;
     }
 
     // Getters and setters
@@ -63,6 +66,14 @@ public class PasswordResetToken {
 
     public void setExpiryDate(LocalDateTime expiryDate) {
         this.expiryDate = expiryDate;
+    }
+
+    public boolean isUsed() {
+        return used;
+    }
+
+    public void setUsed(boolean used) {
+        this.used = used;
     }
 
     public boolean isExpired() {
