@@ -2,12 +2,15 @@ package arora.moulik.springboot.carma.profile;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import arora.moulik.springboot.carma.recepientspage.RecipientRepository;
+import arora.moulik.springboot.carma.register.PasswordResetTokenRepository;
 import arora.moulik.springboot.carma.register.User;
 import arora.moulik.springboot.carma.register.UserRepository;
 import jakarta.servlet.http.HttpSession;
@@ -18,10 +21,14 @@ public class AccountManagementController {
 
     private UserRepository userRepo;
     private PasswordEncoder passwordEncoder;
+    private RecipientRepository recipientRepo;
+    private PasswordResetTokenRepository tokenRepo;
 
-    public AccountManagementController(UserRepository userRepo, PasswordEncoder passwordEncoder) {
+    public AccountManagementController(UserRepository userRepo, PasswordEncoder passwordEncoder, RecipientRepository recipientRepo, PasswordResetTokenRepository tokenRepo) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
+        this.recipientRepo = recipientRepo;
+        this.tokenRepo = tokenRepo;
     }
 
     @GetMapping("/edit-details")
@@ -85,11 +92,19 @@ public class AccountManagementController {
     }
 
     @PostMapping("/delete-account")
+    @Transactional
     public String deleteAccount(ModelMap model, HttpSession session) {
         String username = (String) model.get("username");
         User user = userRepo.findByUsername(username);
 
         if (user != null) {
+            // Delete password reset tokens for this user
+            tokenRepo.deleteByUser(user);
+            
+            // Delete this user from all other users' recipient lists
+            recipientRepo.deleteByUsername(username);
+            
+            // Delete the user account
             userRepo.delete(user);
         }
 

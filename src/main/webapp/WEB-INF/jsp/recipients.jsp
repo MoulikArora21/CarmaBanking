@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -76,10 +77,12 @@
         .add-recipient-toggle { text-align: center; color: #667eea; font-weight: 600; cursor: pointer; font-size: 14px; }
         .add-recipient-toggle:hover { text-decoration: underline; }
         .add-recipient-form { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-        .add-recipient-form.open { max-height: 200px; margin-top: 16px; }
+        .add-recipient-form.open { max-height: 250px; margin-top: 16px; }
         .add-recipient-form form { display: flex; flex-direction: column; gap: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0; }
         .add-recipient-form input { padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Inter', sans-serif; }
         .add-recipient-form input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+        .add-recipient-form input.error { border-color: #e53e3e; background: #fff5f5; }
+        .field-error { color: #e53e3e; font-size: 13px; margin-top: -8px; padding-left: 4px; font-weight: 500; }
         .btn-add { padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
         .btn-add:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
 
@@ -212,10 +215,11 @@
         <div class="add-recipient-section">
             <div class="add-recipient-toggle" onclick="toggleAddRecipientForm()">+ Add New Recipient</div>
             <div class="add-recipient-form" id="addRecipientForm">
-                <form action="/addRecipient" method="post">
-                    <input type="text" name="recipientUsername" placeholder="Enter recipient username" required>
+                <form:form action="/addRecipient" method="post" modelAttribute="recipientRequestDTO">
+                    <form:input path="recipientUsername" placeholder="Enter recipient username" cssClass="${recipientUsernameError != null ? 'error' : ''}" />
+                    <form:errors path="recipientUsername" cssClass="field-error" />
                     <button type="submit" class="btn-add">Add Recipient</button>
-                </form>
+                </form:form>
             </div>
         </div>
     </div>
@@ -275,6 +279,15 @@
             const form = document.getElementById('addRecipientForm');
             form.classList.toggle('open');
         }
+
+        // Keep form open if there are validation errors
+        window.addEventListener('DOMContentLoaded', function() {
+            const hasError = document.querySelector('.field-error');
+            if (hasError) {
+                const form = document.getElementById('addRecipientForm');
+                form.classList.add('open');
+            }
+        });
     </script>
 </body>
 </html>

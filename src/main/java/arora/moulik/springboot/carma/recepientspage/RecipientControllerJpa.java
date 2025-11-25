@@ -53,26 +53,33 @@ public class RecipientControllerJpa {
                 .collect(Collectors.toList());
         model.addAttribute("recipients", recipients);
         model.addAttribute("username", username);
+        
+        // Add empty DTO for the form
+        if (!model.containsAttribute("recipientRequestDTO")) {
+            model.addAttribute("recipientRequestDTO", new RecipientRequestDTO());
+        }
+        
         return "recipients";
     }
 
     @RequestMapping(value = "addRecipient", method = RequestMethod.POST)
     @Transactional
     public String addRecipient(@Valid RecipientRequestDTO recipientDTO, BindingResult result, ModelMap model) {
-        if (result.hasErrors()) {
-            List<Recipient> recipients = recRepo.findByAddedBy(getLoggedinUsername())
-                    .stream()
-                    .collect(Collectors.toList());
-            model.addAttribute("recipients", recipients);
-            model.addAttribute("username", getLoggedinUsername());
-            return "recipients";
-        }
-
         String username = getLoggedinUsername();
 
         if (username == null) {
             model.addAttribute("error", "Session expired or invalid. Please log in again.");
             return "login";
+        }
+
+        if (result.hasErrors()) {
+            List<Recipient> recipients = recRepo.findByAddedBy(username)
+                    .stream()
+                    .collect(Collectors.toList());
+            model.addAttribute("recipients", recipients);
+            model.addAttribute("username", username);
+            model.addAttribute("recipientRequestDTO", recipientDTO);
+            return "recipients";
         }
 
         // Normalize usernames
@@ -88,6 +95,7 @@ public class RecipientControllerJpa {
                     .collect(Collectors.toList());
             model.addAttribute("recipients", recipients);
             model.addAttribute("username", username);
+            model.addAttribute("recipientRequestDTO", recipientDTO);
             return "recipients";
         }
 
@@ -99,6 +107,7 @@ public class RecipientControllerJpa {
                     .collect(Collectors.toList());
             model.addAttribute("recipients", recipients);
             model.addAttribute("username", username);
+            model.addAttribute("recipientRequestDTO", recipientDTO);
             return "recipients";
         }
 
@@ -113,6 +122,7 @@ public class RecipientControllerJpa {
                     .collect(Collectors.toList());
             model.addAttribute("recipients", recipients);
             model.addAttribute("username", username);
+            model.addAttribute("recipientRequestDTO", recipientDTO);
             return "recipients";
         }
 
@@ -122,11 +132,12 @@ public class RecipientControllerJpa {
         System.out.println("Added recipient: " + normalizedRecipientUsername + " for user: " + normalizedAddedBy);
         model.addAttribute("message", "Recipient added successfully!");
 
-        // Refresh recipient list
+        // Refresh recipient list and add empty DTO for form
         List<Recipient> recipients = recRepo.findByAddedBy(username)
                 .stream()
                 .collect(Collectors.toList());
         model.addAttribute("recipients", recipients);
+        model.addAttribute("recipientRequestDTO", new RecipientRequestDTO());
         return "recipients";
     }
 
@@ -188,6 +199,18 @@ public class RecipientControllerJpa {
                 .anyMatch(r -> r.getUsername().equalsIgnoreCase(normalizedRecipientUsername));
         if (!recipientExists) {
             model.addAttribute("error", "Recipient not found in your list.");
+            List<Recipient> recipients = recRepo.findByAddedBy(username)
+                    .stream()
+                    .collect(Collectors.toList());
+            model.addAttribute("recipients", recipients);
+            model.addAttribute("username", username);
+            return "recipients";
+        }
+
+        // Validate recipient account still exists
+        User recipientUser = userRepo.findByUsername(normalizedRecipientUsername);
+        if (recipientUser == null) {
+            model.addAttribute("error", "This account no longer exists. The user may have deleted their account.");
             List<Recipient> recipients = recRepo.findByAddedBy(username)
                     .stream()
                     .collect(Collectors.toList());
