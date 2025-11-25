@@ -30,8 +30,8 @@ public class RegisterationControllerJpa {
     public String startRegistration(ModelMap model) {
         // If user is already authenticated, redirect to homepage
         if (SecurityContextHolder.getContext().getAuthentication() != null &&
-            SecurityContextHolder.getContext().getAuthentication().isAuthenticated() &&
-            !SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")) {
+                SecurityContextHolder.getContext().getAuthentication().isAuthenticated() &&
+                !SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")) {
             return "redirect:/homepage";
         }
 
