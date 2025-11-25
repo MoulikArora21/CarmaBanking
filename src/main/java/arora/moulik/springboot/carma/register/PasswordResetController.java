@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +18,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class PasswordResetController {
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     private final UserRepository userRepository;
     private final PasswordResetTokenRepository tokenRepository;
@@ -67,7 +71,7 @@ public class PasswordResetController {
             tokenRepository.save(resetToken);
 
             // Send password reset email
-            String resetLink = "http://localhost:8080/reset-password?token=" + token;
+            String resetLink = baseUrl + "/reset-password?token=" + token;
             sendPasswordResetEmail(user.getEmail(), user.getName(), resetLink);
 
             redirectAttributes.addFlashAttribute("successMessage",
