@@ -34,8 +34,10 @@ class TransactionRepositoryTest {
         List<Transaction> transactions = transactionRepository.findByUsername("user1");
 
         assertThat(transactions).hasSize(2);
-        assertThat(transactions.get(0).getSenderUsername()).isEqualTo("user1");
-        assertThat(transactions.get(0).getType()).isEqualTo("Debit");
+        // Check that we have one debit and one credit transaction for user1
+        assertThat(transactions).extracting("type").contains("Debit", "Credit");
+        assertThat(transactions).extracting("senderUsername").contains("user1", "user2");
+        assertThat(transactions).extracting("recipientUsername").contains("user1", "user2");
     }
 
     @Test
