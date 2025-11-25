@@ -29,6 +29,19 @@ public class OtpService {
     @Value("${twilio.phone.number}")
     private String twilioPhoneNumber;
 
+    // Setters for testing
+    public void setAccountSid(String accountSid) {
+        this.accountSid = accountSid;
+    }
+
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
+    }
+
+    public void setTwilioPhoneNumber(String twilioPhoneNumber) {
+        this.twilioPhoneNumber = twilioPhoneNumber;
+    }
+
     private static final int OTP_LENGTH = 6;
     private static final int OTP_VALIDITY_MINUTES = 5;
 
@@ -36,15 +49,15 @@ public class OtpService {
 
     public String generateOtp(String username) {
         otps.removeIf(otp -> otp.getUsername().equals(username));
-        
+
         String otp = generateRandomOtp();
         LocalDateTime now = LocalDateTime.now();
         Otp otpEntity = new Otp(otp, username, now, now.plusMinutes(OTP_VALIDITY_MINUTES));
         otps.add(otpEntity);
-        System.out.println("Generated OTP: " + otp + 
-                          ", for username: " + username + 
-                          ", CreatedAt: " + now + 
-                          ", ExpiresAt: " + now.plusMinutes(OTP_VALIDITY_MINUTES));
+        System.out.println("Generated OTP: " + otp +
+                ", for username: " + username +
+                ", CreatedAt: " + now +
+                ", ExpiresAt: " + now.plusMinutes(OTP_VALIDITY_MINUTES));
         return otp;
     }
 
@@ -59,14 +72,15 @@ public class OtpService {
 
     public void sendOtpEmail(String username, String email) {
         String otp = generateOtp(username);
-        System.out.println("Generated OTP for username: " + username + ", OTP: " + otp + 
-                          ", Email: " + email);
+        System.out.println("Generated OTP for username: " + username + ", OTP: " + otp +
+                ", Email: " + email);
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setSubject("Your OTP");
         message.setText("Your OTP is: " + otp + ". Valid for 5 minutes.");
         mailSender.send(message);
     }
+
     public void sendOtpSms(String username, String phoneNumber) {
         String otp = generateOtp(username);
         Twilio.init(accountSid, authToken);
@@ -80,18 +94,18 @@ public class OtpService {
     public boolean verifyOtp(String username, String otp) {
         // Clean up expired OTPs
         otps.removeIf(otpRecord -> LocalDateTime.now().isAfter(otpRecord.getExpiresAt()));
-        
+
         System.out.println("Verifying OTP for username: " + username + ", OTP: " + otp);
         System.out.println("Current OTP list size: " + otps.size());
-        
+
         for (Otp otpRecord : otps) {
-            System.out.println("Checking OTP record: username=" + otpRecord.getUsername() + 
-                              ", OTP=" + otpRecord.getOtp() + 
-                              ", ExpiresAt=" + otpRecord.getExpiresAt() + 
-                              ", CurrentTime=" + LocalDateTime.now());
-            if (otpRecord.getUsername().equals(username) && 
-                otpRecord.getOtp().equals(otp) && 
-                LocalDateTime.now().isBefore(otpRecord.getExpiresAt())) {
+            System.out.println("Checking OTP record: username=" + otpRecord.getUsername() +
+                    ", OTP=" + otpRecord.getOtp() +
+                    ", ExpiresAt=" + otpRecord.getExpiresAt() +
+                    ", CurrentTime=" + LocalDateTime.now());
+            if (otpRecord.getUsername().equals(username) &&
+                    otpRecord.getOtp().equals(otp) &&
+                    LocalDateTime.now().isBefore(otpRecord.getExpiresAt())) {
                 System.out.println("OTP match found, removing record");
                 otps.remove(otpRecord);
                 return true;
