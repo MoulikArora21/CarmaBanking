@@ -11,7 +11,8 @@ import org.springframework.test.context.TestPropertySource;
         "spring.mail.password=",
         "twilio.account.sid=",
         "twilio.auth.token=",
-        "twilio.phone.number="
+        "twilio.phone.number=",
+        "app.base-url=http://localhost:8080"
 })
 class CarmawebappApplicationTests {
 
