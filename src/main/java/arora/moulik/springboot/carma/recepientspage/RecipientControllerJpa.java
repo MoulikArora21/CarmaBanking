@@ -165,6 +165,7 @@ public class RecipientControllerJpa {
                     .collect(Collectors.toList());
             model.addAttribute("recipients", recipients);
             model.addAttribute("username", username);
+            model.addAttribute("recipientRequestDTO", new RecipientRequestDTO());
             return "recipients";
         }
 
@@ -175,6 +176,7 @@ public class RecipientControllerJpa {
                     .collect(Collectors.toList());
             model.addAttribute("recipients", recipients);
             model.addAttribute("username", username);
+            model.addAttribute("recipientRequestDTO", new RecipientRequestDTO());
             return "recipients";
         }
 
@@ -185,6 +187,7 @@ public class RecipientControllerJpa {
                     .collect(Collectors.toList());
             model.addAttribute("recipients", recipients);
             model.addAttribute("username", username);
+            model.addAttribute("recipientRequestDTO", new RecipientRequestDTO());
             return "recipients";
         }
 
@@ -203,6 +206,7 @@ public class RecipientControllerJpa {
                     .collect(Collectors.toList());
             model.addAttribute("recipients", recipients);
             model.addAttribute("username", username);
+            model.addAttribute("recipientRequestDTO", new RecipientRequestDTO());
             return "recipients";
         }
 
@@ -215,6 +219,7 @@ public class RecipientControllerJpa {
                     .collect(Collectors.toList());
             model.addAttribute("recipients", recipients);
             model.addAttribute("username", username);
+            model.addAttribute("recipientRequestDTO", new RecipientRequestDTO());
             return "recipients";
         }
 
@@ -238,6 +243,7 @@ public class RecipientControllerJpa {
                 .collect(Collectors.toList());
         model.addAttribute("recipients", recipients);
         model.addAttribute("username", username);
+        model.addAttribute("recipientRequestDTO", new RecipientRequestDTO());
         return "recipients";
     }
 
